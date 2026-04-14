@@ -21,13 +21,4 @@ export const webTools = {
     execute: async (input: { url: string; method?: string; body?: string }) =>
       resourcesRequest('/api/v1/fetch', { body: input }),
   },
-  blink_web_scrape: {
-    description: 'Scrape a webpage — returns clean text or AI-extracted structured data',
-    inputSchema: z.object({
-      url: z.string(),
-      extract: z.string().optional().describe('What to extract (e.g. "product names and prices")'),
-    }),
-    execute: async (input: { url: string; extract?: string }) =>
-      resourcesRequest('/api/v1/fetch', { body: { url: input.url, extract: input.extract } }),
-  },
 }

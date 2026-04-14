@@ -32,8 +32,10 @@ export const queueTools = {
       payload: z.record(z.unknown()).optional(),
       timezone: z.string().optional().default('UTC'),
     }),
-    execute: async (input: { projectId: string; name: string; cron: string; payload?: Record<string, unknown>; timezone?: string }) =>
-      appRequest(queuePath(input.projectId, 'schedule'), { body: input }),
+    execute: async (input: { projectId: string; name: string; cron: string; payload?: Record<string, unknown>; timezone?: string }) => {
+      const { projectId, ...body } = input
+      return appRequest(queuePath(projectId, 'schedule'), { body })
+    },
   },
   blink_queue_list: {
     description: 'List tasks with optional status/queue filter',
