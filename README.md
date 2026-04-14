@@ -1,8 +1,10 @@
 # Blink Plugin for Cursor, Claude Code, and Codex
 
-Serverless cloud infrastructure for agentic coding.
+Serverless cloud infrastructure for agentic coding — by [Blink.new](https://blink.new).
 
 Blink is the cloud platform built for AI coding agents. It provides everything your app needs to go from idea to production — SQL databases, user authentication, file storage, serverless backends, task queues, custom domains, and hosting — all fully managed so you never have to configure infrastructure or deal with DevOps.
+
+[Website](https://blink.new) · [Documentation](https://blink.new/docs) · [CLI](https://www.npmjs.com/package/@blinkdotnew/cli) · [SDK](https://www.npmjs.com/package/@blinkdotnew/sdk) · [MCP Package](https://www.npmjs.com/package/@blinkdotnew/mcp)
 
 ## What You Get
 

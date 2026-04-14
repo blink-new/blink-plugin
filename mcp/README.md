@@ -1,8 +1,10 @@
 # Blink MCP Server
 
-Serverless cloud infrastructure for agentic coding.
+Serverless cloud infrastructure for agentic coding — by [Blink.new](https://blink.new).
 
-Blink gives your AI coding agent direct access to production-grade cloud infrastructure — SQL databases, user authentication, file storage, serverless backends, task queues, custom domains, and hosting — without requiring you to configure a single service or manage any infrastructure yourself.
+Blink gives your AI coding agent direct access to production-grade cloud infrastructure — SQL databases, user authentication, file storage, serverless backends, task queues, custom domains, and hosting — without requiring you to configure infrastructure or deal with DevOps.
+
+[Website](https://blink.new) · [Documentation](https://blink.new/docs) · [CLI](https://www.npmjs.com/package/@blinkdotnew/cli) · [SDK](https://www.npmjs.com/package/@blinkdotnew/sdk)
 
 ## Why Blink
 
