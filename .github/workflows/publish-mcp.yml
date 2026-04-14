@@ -1,0 +1,42 @@
+name: Publish @blinkdotnew/mcp to npm
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'mcp/package.json'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Build and publish MCP
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        working-directory: mcp
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
+
+      - name: Build
+        working-directory: mcp
+        run: npm run build
+
+      - name: Verify build
+        run: test -f mcp/dist/index.js && echo "✓ dist/index.js present"
+
+      - name: Publish to npm
+        working-directory: mcp
+        run: npm publish --access public --provenance
