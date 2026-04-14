@@ -53,7 +53,8 @@ const server = new McpServer({
 })
 
 for (const [name, tool] of Object.entries(allTools)) {
-  server.tool(name, tool.description, tool.inputSchema, async (input) => {
+  const shape = 'shape' in tool.inputSchema ? (tool.inputSchema as any).shape : tool.inputSchema
+  server.tool(name, tool.description, shape, async (input) => {
     try {
       const result = await tool.execute(input as any)
       return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
