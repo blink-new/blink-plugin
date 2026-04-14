@@ -1,8 +1,8 @@
 # Blink MCP Server
 
-The complete cloud backend your AI coding agent can provision in one command.
+Serverless cloud infrastructure for agentic coding.
 
-SQL database, user auth, file storage, serverless backend, task queues, custom domains, and production hosting — all managed, zero DevOps, infinite scale.
+Blink gives your AI coding agent direct access to production-grade cloud infrastructure — SQL databases, user authentication, file storage, serverless backends, task queues, custom domains, and hosting — without requiring you to configure a single service or manage any infrastructure yourself.
 
 ## Why Blink
 

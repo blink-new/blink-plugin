@@ -1,7 +1,7 @@
 {
   "name": "blink",
   "version": "1.0.0",
-  "description": "Blink — the serverless cloud that ships with everything. SQL database, auth, storage, backend, hosting, queue, domains — zero DevOps, production-ready.",
+  "description": "Blink — serverless cloud infrastructure for agentic coding. Managed SQL databases, auth, storage, serverless backends, task queues, custom domains, and production hosting.",
   "author": { "name": "Blink", "email": "kai@blink.new" },
   "homepage": "https://blink.new",
   "repository": "https://github.com/blink-new/blink-plugin",
@@ -11,7 +11,7 @@
   "mcpServers": "./mcp.json",
   "interface": {
     "displayName": "Blink",
-    "shortDescription": "Serverless cloud — database, auth, backend, hosting, queue — zero DevOps",
+    "shortDescription": "Serverless cloud infrastructure for agentic coding — database, auth, backend, hosting, queue, and domains",
     "category": "Infrastructure",
     "capabilities": ["Read", "Write"],
     "brandColor": "#000000",

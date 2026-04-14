@@ -1,8 +1,8 @@
 # Blink Plugin for Cursor, Claude Code, and Codex
 
-The serverless cloud that ships with everything — now in your coding agent.
+Serverless cloud infrastructure for agentic coding.
 
-SQL database, user auth, file storage, serverless backend, task queues, custom domains, and production hosting. All managed, zero DevOps, infinite scale. One API key, one command, your app is live.
+Blink is the cloud platform built for AI coding agents. It provides everything your app needs to go from idea to production — SQL databases, user authentication, file storage, serverless backends, task queues, custom domains, and hosting — all fully managed so you never have to configure infrastructure or deal with DevOps.
 
 ## What You Get
 
