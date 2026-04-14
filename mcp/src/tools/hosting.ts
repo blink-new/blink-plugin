@@ -20,4 +20,10 @@ export const hostingTools = {
     execute: async ({ projectId }: { projectId: string }) =>
       appRequest(`/api/project/${projectId}/hosting/deactivate`, { method: 'POST', body: {} }),
   },
+  blink_hosting_reactivate: {
+    description: 'Reactivate hosting for a previously deactivated project',
+    inputSchema: z.object({ projectId: z.string() }),
+    execute: async ({ projectId }: { projectId: string }) =>
+      appRequest(`/api/project/${projectId}/hosting/reactivate`, { method: 'POST', body: {} }),
+  },
 }

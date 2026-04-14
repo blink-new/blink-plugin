@@ -77,4 +77,56 @@ export const queueTools = {
     execute: async ({ projectId }: { projectId: string }) =>
       appRequest(queuePath(projectId, 'dlq')),
   },
+  blink_queue_get: {
+    description: 'Get details of a specific task',
+    inputSchema: z.object({ projectId: z.string(), taskId: z.string() }),
+    execute: async (input: { projectId: string; taskId: string }) =>
+      appRequest(queuePath(input.projectId, `tasks/${input.taskId}`)),
+  },
+  blink_queue_create_queue: {
+    description: 'Create a named queue with optional parallelism',
+    inputSchema: z.object({
+      projectId: z.string(),
+      name: z.string(),
+      parallelism: z.number().optional().describe('Max concurrent tasks'),
+    }),
+    execute: async (input: { projectId: string; name: string; parallelism?: number }) =>
+      appRequest(queuePath(input.projectId, 'queues'), { body: { name: input.name, parallelism: input.parallelism } }),
+  },
+  blink_queue_list_queues: {
+    description: 'List all named queues',
+    inputSchema: z.object({ projectId: z.string() }),
+    execute: async ({ projectId }: { projectId: string }) =>
+      appRequest(queuePath(projectId, 'queues')),
+  },
+  blink_queue_delete_queue: {
+    description: 'Delete a named queue',
+    inputSchema: z.object({ projectId: z.string(), name: z.string() }),
+    execute: async (input: { projectId: string; name: string }) =>
+      appRequest(queuePath(input.projectId, `queues/${input.name}`), { method: 'DELETE' }),
+  },
+  blink_queue_schedule_pause: {
+    description: 'Pause a cron schedule',
+    inputSchema: z.object({ projectId: z.string(), name: z.string() }),
+    execute: async (input: { projectId: string; name: string }) =>
+      appRequest(queuePath(input.projectId, `schedules/${input.name}/pause`), { method: 'POST', body: {} }),
+  },
+  blink_queue_schedule_resume: {
+    description: 'Resume a paused cron schedule',
+    inputSchema: z.object({ projectId: z.string(), name: z.string() }),
+    execute: async (input: { projectId: string; name: string }) =>
+      appRequest(queuePath(input.projectId, `schedules/${input.name}/resume`), { method: 'POST', body: {} }),
+  },
+  blink_queue_schedule_delete: {
+    description: 'Delete a cron schedule',
+    inputSchema: z.object({ projectId: z.string(), name: z.string() }),
+    execute: async (input: { projectId: string; name: string }) =>
+      appRequest(queuePath(input.projectId, `schedules/${input.name}`), { method: 'DELETE' }),
+  },
+  blink_queue_dlq_retry: {
+    description: 'Retry a dead letter queue task',
+    inputSchema: z.object({ projectId: z.string(), taskId: z.string() }),
+    execute: async (input: { projectId: string; taskId: string }) =>
+      appRequest(queuePath(input.projectId, `dlq/${input.taskId}/retry`), { method: 'POST', body: {} }),
+  },
 }

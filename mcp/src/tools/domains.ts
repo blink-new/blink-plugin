@@ -26,4 +26,27 @@ export const domainTools = {
     execute: async ({ query }: { query: string }) =>
       appRequest(`/api/domains/search?q=${encodeURIComponent(query)}`),
   },
+  blink_domains_remove: {
+    description: 'Remove a custom domain from a project',
+    inputSchema: z.object({ projectId: z.string(), domainId: z.string() }),
+    execute: async (input: { projectId: string; domainId: string }) =>
+      appRequest(`/api/project/${input.projectId}/domains/${input.domainId}`, { method: 'DELETE' }),
+  },
+  blink_domains_purchase: {
+    description: 'Purchase a domain',
+    inputSchema: z.object({ domain: z.string(), period: z.number().describe('Registration period in years') }),
+    execute: async (input: { domain: string; period: number }) =>
+      appRequest('/api/domains/purchase', { body: { domain: input.domain, period: input.period } }),
+  },
+  blink_domains_connect: {
+    description: 'Connect a purchased domain to a project',
+    inputSchema: z.object({ domainId: z.string(), projectId: z.string() }),
+    execute: async (input: { domainId: string; projectId: string }) =>
+      appRequest('/api/domains/connect', { body: { domainId: input.domainId, projectId: input.projectId } }),
+  },
+  blink_domains_my: {
+    description: 'List all domains you own',
+    inputSchema: z.object({}),
+    execute: async () => appRequest('/api/domains/my'),
+  },
 }

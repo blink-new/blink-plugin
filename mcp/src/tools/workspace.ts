@@ -43,4 +43,44 @@ export const workspaceTools = {
         body: { custom_origins: input.origins },
       }),
   },
+  blink_workspace_create: {
+    description: 'Create a new workspace',
+    inputSchema: z.object({ name: z.string() }),
+    execute: async ({ name }: { name: string }) =>
+      appRequest('/api/workspaces', { body: { name } }),
+  },
+  blink_workspace_switch: {
+    description: 'Switch active workspace',
+    inputSchema: z.object({ workspaceId: z.string() }),
+    execute: async ({ workspaceId }: { workspaceId: string }) =>
+      appRequest('/api/workspaces/switch', { body: { workspace_id: workspaceId } }),
+  },
+  blink_workspace_members: {
+    description: 'List members of a workspace',
+    inputSchema: z.object({ workspaceId: z.string() }),
+    execute: async ({ workspaceId }: { workspaceId: string }) =>
+      appRequest(`/api/workspaces/${workspaceId}/members`),
+  },
+  blink_workspace_invite: {
+    description: 'Invite a user to a workspace',
+    inputSchema: z.object({
+      workspaceId: z.string(),
+      email: z.string(),
+      role: z.string().describe('admin, member, or viewer'),
+    }),
+    execute: async (input: { workspaceId: string; email: string; role: string }) =>
+      appRequest(`/api/workspaces/${input.workspaceId}/invites`, { body: { emails: [input.email], role: input.role } }),
+  },
+  blink_cors_get: {
+    description: 'Get CORS configuration for a project',
+    inputSchema: z.object({ projectId: z.string() }),
+    execute: async ({ projectId }: { projectId: string }) =>
+      appRequest(`/api/project/${projectId}/cors`),
+  },
+  blink_usage: {
+    description: 'Get usage summary for a billing period',
+    inputSchema: z.object({ period: z.string().optional().default('month').describe('e.g. month, week') }),
+    execute: async ({ period }: { period?: string }) =>
+      appRequest(`/api/usage/summary?period=${period ?? 'month'}`),
+  },
 }

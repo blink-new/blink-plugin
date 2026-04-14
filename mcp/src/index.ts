@@ -19,6 +19,9 @@ import { connectorTools } from './tools/connectors.js'
 import { webTools } from './tools/web.js'
 import { agentTools } from './tools/agents.js'
 import { phoneTools } from './tools/phone.js'
+import { functionTools } from './tools/functions.js'
+import { versionTools } from './tools/versions.js'
+import { deployTools } from './tools/deploy.js'
 
 const allTools = {
   ...projectTools,
@@ -39,6 +42,9 @@ const allTools = {
   ...webTools,
   ...agentTools,
   ...phoneTools,
+  ...functionTools,
+  ...versionTools,
+  ...deployTools,
 }
 
 const server = new McpServer({

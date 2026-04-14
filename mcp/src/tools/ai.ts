@@ -62,4 +62,31 @@ export const aiTools = {
     execute: async (input: { phoneNumber: string; systemPrompt: string; voice?: string }) =>
       resourcesRequest('/api/v1/ai/call', { body: { phone_number: input.phoneNumber, system_prompt: input.systemPrompt, voice: input.voice } }),
   },
+  blink_ai_image_edit: {
+    description: 'Edit an image using an AI model with a text prompt',
+    inputSchema: z.object({
+      prompt: z.string(),
+      imageUrl: z.string().describe('URL of the source image to edit'),
+      model: z.string().optional(),
+    }),
+    execute: async (input: { prompt: string; imageUrl: string; model?: string }) =>
+      resourcesRequest('/api/v1/ai/image', { body: { prompt: input.prompt, image: input.imageUrl, model: input.model } }),
+  },
+  blink_ai_animate: {
+    description: 'Animate a still image into a video',
+    inputSchema: z.object({
+      prompt: z.string(),
+      imageUrl: z.string().describe('URL of the source image to animate'),
+      model: z.string().optional(),
+      duration: z.string().optional().describe('e.g. 5s, 10s'),
+    }),
+    execute: async (input: { prompt: string; imageUrl: string; model?: string; duration?: string }) =>
+      resourcesRequest('/api/v1/ai/video', { body: { prompt: input.prompt, image: input.imageUrl, model: input.model, duration: input.duration } }),
+  },
+  blink_ai_call_status: {
+    description: 'Check the status of an AI phone call',
+    inputSchema: z.object({ callId: z.string() }),
+    execute: async ({ callId }: { callId: string }) =>
+      resourcesRequest(`/api/v1/ai/call/${callId}`),
+  },
 }
