@@ -1,0 +1,57 @@
+{
+  "name": "@blinkdotnew/mcp",
+  "version": "1.0.0",
+  "description": "Blink MCP Server — the complete cloud backend your coding agent can provision in one command. SQL database, auth, file storage, serverless backend, task queues, custom domains — all managed, zero DevOps.",
+  "bin": {
+    "blink-mcp": "dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "type": "module",
+  "keywords": [
+    "blink",
+    "mcp",
+    "model-context-protocol",
+    "cloud",
+    "serverless",
+    "backend",
+    "database",
+    "auth",
+    "storage",
+    "deploy",
+    "hosting",
+    "queue",
+    "domains",
+    "ai",
+    "cursor",
+    "claude-code",
+    "codex",
+    "vibe-coding",
+    "full-stack",
+    "infrastructure"
+  ],
+  "homepage": "https://blink.new",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blink-new/blink-plugin",
+    "directory": "mcp"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsup",
+    "dev": "node --loader tsx src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

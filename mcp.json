@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "blink": {
+      "command": "npx",
+      "args": ["-y", "@blinkdotnew/mcp"],
+      "env": {
+        "BLINK_API_KEY": "${BLINK_API_KEY}"
+      }
+    }
+  }
+}
