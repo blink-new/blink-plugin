@@ -1,10 +1,8 @@
 # Blink Plugin for Cursor, Claude Code, and Codex
 
-Serverless cloud infrastructure for agentic coding — by [Blink.new](https://blink.new).
+Build and host full-stack apps with managed database, auth, storage, backend, queue, and custom domains — all from your editor.
 
-Blink is the cloud platform built for AI coding agents. It provides everything your app needs to go from idea to production — SQL databases, user authentication, file storage, serverless backends, task queues, custom domains, and hosting — all fully managed so you never have to configure infrastructure or deal with DevOps.
-
-[Website](https://blink.new) · [Documentation](https://blink.new/docs) · [CLI](https://www.npmjs.com/package/@blinkdotnew/cli) · [SDK](https://www.npmjs.com/package/@blinkdotnew/sdk) · [MCP Package](https://www.npmjs.com/package/@blinkdotnew/mcp)
+By [Blink.new](https://blink.new) · [Documentation](https://blink.new/docs) · [CLI](https://www.npmjs.com/package/@blinkdotnew/cli) · [SDK](https://www.npmjs.com/package/@blinkdotnew/sdk) · [MCP Package](https://www.npmjs.com/package/@blinkdotnew/mcp)
 
 ## What You Get
 
@@ -18,6 +16,10 @@ Blink is the cloud platform built for AI coding agents. It provides everything y
 | **Queue** | Background tasks + cron scheduling — built-in job processing |
 | **Domains** | Search, purchase, and connect custom domains |
 | **AI Gateway** | Multi-model AI access (OpenAI, Anthropic, Google, Fal, ElevenLabs) |
+| **Realtime** | WebSocket pub/sub for live updates |
+| **RAG** | Knowledge base with semantic search |
+| **Connectors** | 38 OAuth integrations (Notion, Slack, Discord, Google, etc.) |
+| **Notifications** | Email and SMS delivery |
 
 ## Quick Setup
 
@@ -53,9 +55,11 @@ Ask your agent:
 
 The agent will use the MCP tools to create the project, configure auth, set up the database, and deploy — all automatically.
 
-## Skills Included
+## What's Included
 
-This plugin includes skills that teach your coding agent how to use each Blink feature:
+### Skills (14)
+
+Skills teach your agent how to use each Blink feature end-to-end:
 
 - **blink-full-stack** — End-to-end guide: scaffold → auth → DB → backend → deploy → domain
 - **blink-database** — SQL database operations, schema design, migrations
@@ -65,6 +69,50 @@ This plugin includes skills that teach your coding agent how to use each Blink f
 - **blink-queue** — Background tasks, cron schedules, dead letter queue
 - **blink-deploy** — Build and deploy pipeline, preview vs production
 - **blink-domains** — Custom domains, DNS setup, SSL, domain purchase
+- **blink-ai** — AI Gateway: text, image, video, speech, transcription
+- **blink-realtime** — WebSocket pub/sub, channels, presence
+- **blink-rag** — Knowledge base, semantic search, document upload
+- **blink-notifications** — Email and SMS delivery
+- **blink-connectors** — OAuth integrations (38 providers)
+- **blink-agents** — Cloud agent management and secrets
+
+### Agents (4)
+
+Specialized subagents that can be delegated to for focused work (Claude Code + Cursor):
+
+- **full-stack-builder** — Builds complete apps end-to-end on Blink
+- **frontend-developer** — UI components, layouts, styling, routing
+- **backend-developer** — Database schema, edge functions, auth, queues, integrations
+- **verifier** — Code review: bugs, imports, types, security, deploy readiness
+
+### Rules
+
+Persistent coding rules that ensure correct Blink SDK usage, database patterns, and deployment practices. Applied automatically when building on Blink.
+
+### MCP Tools (62)
+
+62 tools across 18 categories for programmatic platform management:
+
+| Category | Tools |
+|----------|-------|
+| Project | create, list, get, update, delete |
+| Database | query (SQL), list tables |
+| Auth | get config, set config (providers, BYOC) |
+| Backend | deploy, status, logs |
+| Environment | list, set, delete secrets |
+| Hosting | status, activate, deactivate |
+| Domains | list, add, verify, search |
+| Queue | enqueue, schedule, list, stats, cancel, schedules, DLQ |
+| Workspace | list, credits, security, CORS |
+| AI Gateway | text, image, video, speech, transcribe, call |
+| Storage | list, get URL, delete |
+| Realtime | publish to channel |
+| RAG | search, list collections |
+| Notifications | send email, send SMS |
+| Connectors | execute, list linked, check status |
+| Web | search, fetch URL |
+| Agents | list, status, secrets CRUD |
+| Phone | list numbers, buy, release |
 
 ## Companion CLI
 

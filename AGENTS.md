@@ -1,53 +1,44 @@
 # AGENTS.md — blink-plugin
 
-Blink plugin for Cursor, Claude Code, and Codex. Serverless cloud infrastructure for agentic coding.
+Blink plugin for Cursor, Claude Code, and Codex. Build and host full-stack apps with managed database, auth, storage, backend, queue, and custom domains.
 
 **Public repo**: [github.com/blink-new/blink-plugin](https://github.com/blink-new/blink-plugin)
 
 ## Structure
 
 ```
-.cursor-plugin/plugin.json    Cursor manifest
-.claude-plugin/plugin.json    Claude Code manifest
-.codex-plugin/plugin.json     Codex manifest
+.cursor-plugin/plugin.json    Cursor manifest (skills + rules + MCP)
+.claude-plugin/plugin.json    Claude Code manifest (skills + agents + MCP)
+.codex-plugin/plugin.json     Codex manifest (skills + MCP)
 mcp.json                      MCP server config (STDIO: npx @blinkdotnew/mcp)
 mcp/                          MCP server npm package (@blinkdotnew/mcp)
   src/index.ts                STDIO entry — registers all tools
   src/lib/api.ts              HTTP client (blink.new + core.blink.new)
-  src/tools/                  Tool definitions by category
-skills/                       8 SKILL.md files for agent domain knowledge
+  src/tools/                  Tool definitions by category (18 files)
+skills/                       14 SKILL.md files for agent domain knowledge
+agents/                       4 agent personas (Claude Code subagents, also works in Cursor)
+rules/                        Persistent coding rules (.mdc for Cursor)
+.claude/rules/                Same rules as .md for Claude Code
+assets/                       logo.svg
 ```
 
 ## npm Packages
 
-
 | Package            | Version | Repo                     | Auto-publish                                    |
 | ------------------ | ------- | ------------------------ | ----------------------------------------------- |
-| `@blinkdotnew/mcp` | 1.0.x   | `blink-new/blink-plugin` | Push to main + bump `mcp/package.json`          |
+| `@blinkdotnew/mcp` | 1.2.x   | `blink-new/blink-plugin` | Push to main + bump `mcp/package.json`          |
 | `@blinkdotnew/cli` | 0.6.x   | `blink-new/blink-sdk`    | Push to main + bump `packages/cli/package.json` |
 | `@blinkdotnew/sdk` | 2.4.x   | `blink-new/blink-sdk`    | Push to main + bump `packages/sdk/package.json` |
-
 
 ## Publishing MCP
 
 Automated via `.github/workflows/publish-mcp.yml`. Fires on push to `main` when `mcp/package.json` changes.
-
-```bash
-cd services/blink-plugin/mcp
-# bump version in package.json
-npm run build  # verify locally
-cd ..
-git add mcp/package.json && git commit -m "chore: bump MCP to vX.X.X"
-git push origin main
-# → GitHub Actions publishes to npm in ~20s
-```
 
 Auth: OIDC Trusted Publisher. Configured on npmjs.com for `blink-new/blink-plugin` + `publish-mcp.yml` + environment `npm`.
 
 ## MCP Tools (62)
 
 18 tool categories, all STDIO transport:
-
 
 | Category      | Tools                                                                                  |
 | ------------- | -------------------------------------------------------------------------------------- |
@@ -65,32 +56,42 @@ Auth: OIDC Trusted Publisher. Configured on npmjs.com for `blink-new/blink-plugi
 | Realtime      | `blink_realtime_publish`                                                               |
 | RAG           | `blink_rag_search`, `_collections`                                                     |
 | Notifications | `blink_notify_email`, `_sms_send`                                                      |
-| Connectors    | `blink_connector_exec`, `_providers`, `_status`                                        |
-| Web           | `blink_web_search`, `_fetch`, `_scrape`                                                |
+| Connectors    | `blink_connector_exec`, `_linked`, `_status`                                           |
+| Web           | `blink_web_search`, `_fetch`                                                           |
 | Agents        | `blink_agent_list`, `_status`, `_secrets_list`, `_secrets_set`, `_secrets_delete`       |
 | Phone         | `blink_phone_list`, `_buy`, `_release`                                                 |
 
-
 ## Skills (14)
 
+| Skill              | Covers                                                       |
+| ------------------ | ------------------------------------------------------------ |
+| `blink-full-stack` | End-to-end: create → auth → DB → backend → deploy → domain  |
+| `blink-database`   | SQL CRUD, schema, migrations, SDK methods                    |
+| `blink-auth`       | Managed + headless modes, providers, BYOC                    |
+| `blink-backend`    | Hono server, CF Workers, env vars, deployment                |
+| `blink-storage`    | Upload/download, CDN URLs, SDK methods                       |
+| `blink-queue`      | Background tasks, cron, DLQ, named queues                    |
+| `blink-deploy`     | Build pipeline, preview vs production                        |
+| `blink-domains`    | Custom domains, DNS, SSL, purchase                           |
+| `blink-ai`         | AI Gateway — text, image, video, speech, transcription       |
+| `blink-realtime`   | WebSocket pub/sub, channels, events                          |
+| `blink-rag`        | Knowledge base, semantic search, document upload             |
+| `blink-notifications` | Email, SMS, phone numbers                                 |
+| `blink-connectors` | OAuth integrations (38 providers), exec calls                |
+| `blink-agents`     | Claw agent management, secrets, use cases                    |
 
-| Skill              | Covers                                                     |
-| ------------------ | ---------------------------------------------------------- |
-| `blink-full-stack` | End-to-end: create → auth → DB → backend → deploy → domain |
-| `blink-database`   | SQL CRUD, schema, migrations, SDK methods                  |
-| `blink-auth`       | Managed + headless modes, providers, BYOC                  |
-| `blink-backend`    | Hono server, CF Workers, env vars, deployment              |
-| `blink-storage`    | Upload/download, CDN URLs, SDK methods                     |
-| `blink-queue`      | Background tasks, cron, DLQ, named queues                  |
-| `blink-deploy`     | Build pipeline, preview vs production                      |
-| `blink-domains`    | Custom domains, DNS, SSL, purchase                         |
-| `blink-ai`         | AI Gateway — text, image, video, speech, transcription, calls |
-| `blink-realtime`   | WebSocket pub/sub, channels, events                        |
-| `blink-rag`        | Knowledge base, semantic search, document upload           |
-| `blink-notifications` | Email, SMS, phone numbers                               |
-| `blink-connectors` | OAuth integrations (38 providers), exec calls              |
-| `blink-agents`     | Claw agent management, secrets, use cases                  |
+## Agents (4)
 
+| Agent               | Role                                                         |
+| ------------------- | ------------------------------------------------------------ |
+| `full-stack-builder`| Complete app build: project → auth → DB → backend → deploy   |
+| `frontend-developer`| UI, components, layouts, routing, styling                    |
+| `backend-developer` | Database, edge functions, auth config, queues, integrations  |
+| `verifier`          | Code review: bugs, imports, types, security, deploy readiness|
+
+## Rules (1)
+
+`blink-project.mdc` — Persistent coding rules for SDK init, database patterns, backend conventions, secret management. Same content in `.claude/rules/blink-project.md` for Claude Code.
 
 ## Auth
 
@@ -110,4 +111,3 @@ MCP tools authenticate via `BLINK_API_KEY` env var (workspace API key, `blnk_ak_
 - **Cursor**: Submit repo URL at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish)
 - **Claude Code**: Submit at [claude.ai/settings/plugins/submit](https://claude.ai/settings/plugins/submit)
 - **Codex**: Submit to official Codex plugin directory (coming soon)
-
