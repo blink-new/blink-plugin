@@ -3,6 +3,10 @@ name: blink-database
 description: Database CRUD with automatic camelCase conversion. Create, list, update, delete, upsert, count, exists. Raw SQL via CLI. Boolean handling for SQLite.
 ---
 
+## MCP Tools
+
+`blink_db_query` · `blink_db_schema`
+
 ## Getting Started
 
 ```bash

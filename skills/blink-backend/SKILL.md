@@ -1,7 +1,11 @@
 ---
-
-## name: blink-backend
+name: blink-backend
 description: Blink Backend — Hono server on CF Workers for webhooks, server-side secrets, custom APIs. Pro+ only. Deploy via CLI.
+---
+
+## MCP Tools
+
+`blink_backend_status` · `blink_backend_deploy` · `blink_backend_logs`
 
 ## When to Use
 

@@ -3,6 +3,10 @@ name: blink-domains
 description: Custom domain management. Add domains, DNS setup, SSL verification, domain search, and domain purchase via CLI.
 ---
 
+## MCP Tools
+
+`blink_domains_add` · `blink_domains_list` · `blink_domains_verify` · `blink_domains_remove` · `blink_domains_search` · `blink_domains_purchase`
+
 ## Getting Started
 
 ```bash
@@ -12,8 +16,8 @@ blink domains add myapp.com
 # Check domain status and DNS instructions
 blink domains list
 
-# Verify DNS is configured
-blink domains verify myapp.com
+# Verify DNS is configured (domain_id from `blink domains list` or `blink domains add`)
+blink domains verify <domain_id>
 ```
 
 ## Adding a Custom Domain
@@ -31,7 +35,7 @@ Configure these DNS records at your registrar:
   CNAME  @       cname.blink.new
   CNAME  www     cname.blink.new
 
-After configuring DNS, run: blink domains verify myapp.com
+After configuring DNS, run: blink domains verify <domain_id>
 ```
 
 ## DNS Configuration
@@ -49,7 +53,8 @@ After configuring DNS, run: blink domains verify myapp.com
 SSL certificates are provisioned automatically after DNS propagation. Verify status:
 
 ```bash
-blink domains verify myapp.com
+# domain_id comes from `blink domains list` or `blink domains add` response
+blink domains verify <domain_id>
 # → SSL: active | pending | error
 ```
 
@@ -73,8 +78,8 @@ Purchased domains are auto-configured — no manual DNS needed.
 # List all domains on current project
 blink domains list
 
-# Remove a domain
-blink domains remove myapp.com
+# Remove a domain (use domain_id, not domain name)
+blink domains remove <domain_id>
 ```
 
 ## Apex → www Redirect
@@ -98,8 +103,8 @@ blink domains add myapp.com
 
 # 3. Configure DNS at registrar (follow output instructions)
 
-# 4. Verify
-blink domains verify myapp.com
+# 4. Verify (use domain_id from step 2)
+blink domains verify <domain_id>
 
 # 5. Done — site is live at myapp.com with SSL
 ```

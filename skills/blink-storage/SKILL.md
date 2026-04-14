@@ -1,13 +1,13 @@
 ---
-
-## name: blink-storage
+name: blink-storage
 description: File upload with progress tracking and public URLs. Download, remove files. CLI for management. Extension auto-detection.
+---
 
 ## Getting Started
 
 ```bash
 # Upload a file
-blink storage upload ./photo.jpg uploads/photo.jpg
+blink storage upload ./photo.jpg --path uploads/photo.jpg
 
 # List files
 blink storage list

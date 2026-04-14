@@ -3,6 +3,10 @@ name: blink-deploy
 description: Build and deploy Blink apps to production. Preview vs production deploys, deploy pipeline, static site hosting.
 ---
 
+## MCP Tools
+
+`blink_deploy` · `blink_deployments_list` · `blink_rollback`
+
 ## Getting Started
 
 ```bash
@@ -14,6 +18,12 @@ blink deploy ./dist --prod
 
 # Preview deploy (temporary URL)
 blink deploy ./dist
+
+# List deployments
+blink deployments
+
+# Rollback to a previous deployment
+blink rollback <deployment_id>
 ```
 
 ## Deploy Pipeline
@@ -45,9 +55,12 @@ blink deploy ./dist --prod
 
 | Framework | Build Command | Output Dir |
 |-----------|--------------|------------|
-| Next.js (static) | `next build` | `out/` |
-| Vite / React | `vite build` | `dist/` |
-| Create React App | `react-scripts build` | `build/` |
+| React (Vite) | `vite build` | `./dist` |
+| Next.js (`output: 'export'`) | `next build` | `./out` |
+| Vue | `vite build` | `./dist` |
+| Svelte | `vite build` | `./build` |
+| Astro | `astro build` | `./dist` |
+| Plain HTML/CSS/JS | — | `./` |
 
 For Next.js static export, ensure `next.config.ts` has `output: 'export'`.
 

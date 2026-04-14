@@ -3,6 +3,8 @@ name: blink-realtime
 description: WebSocket pub/sub messaging with channels, presence tracking, and message history. Real-time communication for chat, collaboration, and live updates.
 ---
 
+**Requires auth**: initialize with `auth: { mode: 'managed' }` for realtime to work.
+
 ## Getting Started
 
 ```bash

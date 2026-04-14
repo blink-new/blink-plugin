@@ -3,6 +3,10 @@ name: blink-queue
 description: Background task queue and cron schedules. Enqueue tasks, named FIFO queues with parallelism, auto-retry. Requires Blink Backend (Pro+).
 ---
 
+## MCP Tools
+
+`blink_queue_enqueue` · `blink_queue_schedule` · `blink_queue_list` · `blink_queue_stats` · `blink_queue_cancel` · `blink_queue_get` · `blink_queue_retry_dead` · `blink_queue_create_queue`
+
 ## Getting Started
 
 ```bash
@@ -10,10 +14,10 @@ description: Background task queue and cron schedules. Enqueue tasks, named FIFO
 blink backend status
 
 # Enqueue a task
-blink queue enqueue send-welcome-email '{"to":"user@example.com"}'
+blink queue enqueue send-welcome-email --payload '{"to":"user@example.com"}'
 
 # Create a cron schedule
-blink queue schedule create daily-digest "0 9 * * *" '{"reportType":"daily"}'
+blink queue schedule create daily-digest "0 9 * * *" --payload '{"reportType":"daily"}'
 
 # List tasks
 blink queue list --status pending
@@ -64,7 +68,7 @@ app.post('/api/queue', async (c) => {
 
 ```bash
 blink backend deploy
-blink queue enqueue send-welcome-email '{"to":"user@example.com"}' --queue emails --delay 10s
+blink queue enqueue send-welcome-email --payload '{"to":"user@example.com"}' --queue emails --delay 10s
 ```
 
 ## SDK Methods

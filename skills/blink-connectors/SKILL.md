@@ -13,7 +13,7 @@ blink connector providers
 blink connector status slack
 
 # Execute an API call
-blink connector exec slack --method /conversations --http-method GET
+blink connector exec slack /conversations GET
 ```
 
 ## MCP Tools
@@ -76,20 +76,22 @@ Plus 20+ more — run `blink connector providers` for the full list.
 
 ```bash
 # Slack: list channels
-blink connector exec slack --method /conversations --http-method GET
+blink connector exec slack /conversations GET
 
 # Notion: search pages
-blink connector exec notion --method /search --http-method POST --data '{"query":"meeting notes"}'
+blink connector exec notion /search POST '{"query":"meeting notes"}'
 
 # Google Sheets: read data
-blink connector exec google_sheets --method "/spreadsheets/SHEET_ID/values/Sheet1!A1:D10" --http-method GET
+blink connector exec google_sheets "/spreadsheets/SHEET_ID/values/Sheet1!A1:D10" GET
 
 # HubSpot: list contacts
-blink connector exec hubspot --method /contacts --http-method GET --params "limit=50"
+blink connector exec hubspot /contacts GET '{"limit":50}'
 
 # Salesforce: SOQL query
-blink connector exec salesforce --method /query --http-method GET --params "q=SELECT Id,Name FROM Account LIMIT 10"
+blink connector exec salesforce /query GET '{"q":"SELECT Id,Name FROM Account LIMIT 10"}'
 ```
+
+**CLI syntax**: `blink connector exec <provider> <endpoint> [method] [params]`
 
 ## Method Path Rules
 

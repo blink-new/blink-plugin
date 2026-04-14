@@ -106,7 +106,15 @@ blink domains verify myapp.com
 | `blink-queue` | Background tasks, cron jobs |
 | `blink-deploy` | Build and deploy to production |
 | `blink-domains` | Custom domains, DNS, SSL |
+| `blink-ai` | Text/image/video generation, TTS, transcription, AI calls |
+| `blink-agents` | Managed AI agent hosting (Blink Claw) |
+| `blink-connectors` | OAuth integrations (Slack, Google, Notion, 38+ services) |
+| `blink-rag` | Knowledge base, vector search, AI Q&A with citations |
+| `blink-realtime` | WebSocket pub/sub, presence, message history |
+| `blink-notifications` | Email, SMS, phone numbers |
 
-## Platform Support
+## Supported Frameworks
 
-React, Vue, Svelte, vanilla JS, Node.js, Deno, React Native (with AsyncStorage adapter).
+**Frontend**: React (Vite), Next.js (static export), Vue, Svelte, Astro, Expo React Native, plain HTML/CSS/JS
+
+**Backend**: TypeScript/JavaScript only (Hono on CF Workers)

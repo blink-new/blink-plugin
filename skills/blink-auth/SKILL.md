@@ -1,7 +1,13 @@
 ---
+name: blink-auth
+description: Authentication with managed and headless modes. Social providers, email/password, magic links, RBAC.
+---
 
-## name: blink-auth
-description: Authentication with managed (redirect) and headless (custom UI) modes. Social providers, email/password, magic links, RBAC, email verification, password reset.
+**Important**: Enable providers via CLI or MCP before using them in your app: `blink auth-config set --provider google --enabled true`
+
+## MCP Tools
+
+`blink_auth_config_get` · `blink_auth_config_set`
 
 ## Getting Started
 
@@ -20,7 +26,8 @@ Redirects to hosted auth page. Best for websites and MVPs. **Not for mobile.**
 
 ```typescript
 const blink = createClient({
-  projectId: 'your-project',
+  projectId: import.meta.env.VITE_BLINK_PROJECT_ID || 'your-project-id',
+  publishableKey: import.meta.env.VITE_BLINK_PUBLISHABLE_KEY || 'blnk_pk_xxx',
   auth: { mode: 'managed' },
 })
 
@@ -35,7 +42,8 @@ Full control. **Required for mobile (Expo/React Native).**
 
 ```typescript
 const blink = createClient({
-  projectId: 'your-project',
+  projectId: import.meta.env.VITE_BLINK_PROJECT_ID || 'your-project-id',
+  publishableKey: import.meta.env.VITE_BLINK_PUBLISHABLE_KEY || 'blnk_pk_xxx',
   auth: { mode: 'headless' },
 })
 
@@ -104,6 +112,8 @@ await blink.auth.verifyMagicLink(token)
 
 ```typescript
 const blink = createClient({
+  projectId: import.meta.env.VITE_BLINK_PROJECT_ID || 'your-project-id',
+  publishableKey: import.meta.env.VITE_BLINK_PUBLISHABLE_KEY || 'blnk_pk_xxx',
   auth: {
     mode: 'headless',
     roles: {
@@ -140,6 +150,7 @@ import { createClient, AsyncStorageAdapter } from '@blinkdotnew/sdk'
 
 const blink = createClient({
   projectId: process.env.EXPO_PUBLIC_BLINK_PROJECT_ID!,
+  publishableKey: process.env.EXPO_PUBLIC_BLINK_PUBLISHABLE_KEY!,
   auth: { mode: 'headless', webBrowser: WebBrowser },
   storage: new AsyncStorageAdapter(AsyncStorage),
 })
