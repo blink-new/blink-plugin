@@ -10,6 +10,15 @@ import { hostingTools } from './tools/hosting.js'
 import { domainTools } from './tools/domains.js'
 import { queueTools } from './tools/queue.js'
 import { workspaceTools } from './tools/workspace.js'
+import { aiTools } from './tools/ai.js'
+import { storageTools } from './tools/storage.js'
+import { realtimeTools } from './tools/realtime.js'
+import { ragTools } from './tools/rag.js'
+import { notificationTools } from './tools/notifications.js'
+import { connectorTools } from './tools/connectors.js'
+import { webTools } from './tools/web.js'
+import { agentTools } from './tools/agents.js'
+import { phoneTools } from './tools/phone.js'
 
 const allTools = {
   ...projectTools,
@@ -21,11 +30,20 @@ const allTools = {
   ...domainTools,
   ...queueTools,
   ...workspaceTools,
+  ...aiTools,
+  ...storageTools,
+  ...realtimeTools,
+  ...ragTools,
+  ...notificationTools,
+  ...connectorTools,
+  ...webTools,
+  ...agentTools,
+  ...phoneTools,
 }
 
 const server = new McpServer({
   name: 'blink',
-  version: '1.0.0',
+  version: '1.1.0',
 })
 
 for (const [name, tool] of Object.entries(allTools)) {

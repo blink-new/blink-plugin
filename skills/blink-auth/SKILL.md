@@ -1,7 +1,7 @@
 ---
-name: blink-auth
+
+## name: blink-auth
 description: Authentication with managed (redirect) and headless (custom UI) modes. Social providers, email/password, magic links, RBAC, email verification, password reset.
----
 
 ## Getting Started
 
@@ -49,11 +49,13 @@ await blink.auth.signInWithMicrosoft()
 
 ### Mode Comparison
 
-| Feature | Managed | Headless |
-|---------|---------|----------|
-| Setup | 1 line | Custom UI |
-| Mobile | ❌ | ✅ Required |
+
+| Feature  | Managed       | Headless     |
+| -------- | ------------- | ------------ |
+| Setup    | 1 line        | Custom UI    |
+| Mobile   | ❌             | ✅ Required   |
 | Branding | Blink-branded | Fully custom |
+
 
 ## Auth State Listener (Required for React)
 
@@ -142,3 +144,4 @@ const blink = createClient({
   storage: new AsyncStorageAdapter(AsyncStorage),
 })
 ```
+

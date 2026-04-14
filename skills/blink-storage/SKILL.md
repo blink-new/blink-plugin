@@ -1,7 +1,7 @@
 ---
-name: blink-storage
+
+## name: blink-storage
 description: File upload with progress tracking and public URLs. Download, remove files. CLI for management. Extension auto-detection.
----
 
 ## Getting Started
 
@@ -18,11 +18,13 @@ blink storage list uploads/
 
 ## Auth Requirements
 
-| Operation | Auth Required | Notes |
-|-----------|---------------|-------|
-| `upload()` | ❌ No | Public add-only (no overwrite) |
-| `download()` | ✅ Yes | Signed URL |
-| `remove()` | ✅ Yes | Requires JWT |
+
+| Operation    | Auth Required | Notes                          |
+| ------------ | ------------- | ------------------------------ |
+| `upload()`   | ❌ No          | Public add-only (no overwrite) |
+| `download()` | ✅ Yes         | Signed URL                     |
+| `remove()`   | ✅ Yes         | Requires JWT                   |
+
 
 ## Upload
 
@@ -105,8 +107,11 @@ Uploaded files return direct HTTPS URLs: `https://storage.googleapis.com/{projec
 
 ## Common Errors
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| 409 conflict | Path already exists | Add timestamp/random ID |
-| Invalid path | Special characters | Sanitize: `path.replace(/[^a-zA-Z0-9_\-\/\.]/g, '_')` |
-| File too large | Exceeds limit | Compress or split file |
+
+| Error          | Cause               | Fix                                                   |
+| -------------- | ------------------- | ----------------------------------------------------- |
+| 409 conflict   | Path already exists | Add timestamp/random ID                               |
+| Invalid path   | Special characters  | Sanitize: `path.replace(/[^a-zA-Z0-9_\-\/\.]/g, '_')` |
+| File too large | Exceeds limit       | Compress or split file                                |
+
+

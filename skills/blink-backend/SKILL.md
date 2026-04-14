@@ -1,7 +1,7 @@
 ---
-name: blink-backend
+
+## name: blink-backend
 description: Blink Backend — Hono server on CF Workers for webhooks, server-side secrets, custom APIs. Pro+ only. Deploy via CLI.
----
 
 ## When to Use
 
@@ -114,12 +114,14 @@ blink backend deploy
 
 ## Common Errors
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `BACKEND_REQUIRES_PRO` | Free/Starter workspace | Upgrade to Pro+ |
-| `MISSING_ENTRYPOINT` | No `backend/index.ts` | Create with `export default app` |
-| CORS error | Missing middleware | Add `app.use("*", cors())` |
-| 401 on blink-apis | Wrong key | Use `secretKey`, not `publishableKey` |
+
+| Error                  | Cause                  | Fix                                   |
+| ---------------------- | ---------------------- | ------------------------------------- |
+| `BACKEND_REQUIRES_PRO` | Free/Starter workspace | Upgrade to Pro+                       |
+| `MISSING_ENTRYPOINT`   | No `backend/index.ts`  | Create with `export default app`      |
+| CORS error             | Missing middleware     | Add `app.use("*", cors())`            |
+| 401 on blink-apis      | Wrong key              | Use `secretKey`, not `publishableKey` |
+
 
 ## Checklist
 
@@ -128,3 +130,4 @@ blink backend deploy
 - Uses `secretKey` in `createClient` (not publishableKey)
 - Deployed with `blink backend deploy`
 - AbortController timeout on all external `fetch()` calls
+
