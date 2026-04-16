@@ -16,10 +16,11 @@
  * - large attachments (only attachmentId present, no data): untouched
  */
 
-// base64url uses only [A-Za-z0-9_-]. Already-decoded text will contain
-// spaces, punctuation, HTML tags, etc. — so this check makes the decode
-// idempotent (calling twice won't corrupt already-decoded content).
-const BASE64URL_RE = /^[A-Za-z0-9_-]+$/
+// base64url uses [A-Za-z0-9_-], optionally with trailing = padding.
+// Gmail's body.data includes padding in practice even though the spec says
+// base64url omits it. Already-decoded text contains spaces/punctuation/HTML
+// which don't match this pattern, so the check makes decode idempotent.
+const BASE64URL_RE = /^[A-Za-z0-9_-]+=*$/
 
 function decodeGmailPayload(payload: any): void {
   if (!payload) return
