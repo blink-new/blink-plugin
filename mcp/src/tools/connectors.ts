@@ -1,10 +1,10 @@
 import { z } from 'zod'
 import { resourcesRequest } from '../lib/api.js'
-import { maybeDecodeGmailResponse } from '../lib/gmail-decode.js'
+import { transformConnectorResponse } from '../lib/connector-transform.js'
 
 export const connectorTools = {
   blink_connector_exec: {
-    description: 'Execute an API call on a connected OAuth provider (e.g. Google, Notion, Slack, GitHub, Stripe, Jira). Gmail message/thread responses have body content auto-decoded from base64url to plain text; binary attachments stripped to metadata.',
+    description: 'Execute an API call on a connected OAuth provider (e.g. Google, Notion, Slack, GitHub, Stripe, Jira). Responses are optimized for agent consumption: Gmail bodies decoded to text; GitHub file contents decoded from base64; binary attachments stripped to metadata.',
     inputSchema: z.object({
       projectId: z.string().describe('Project ID (needed for workspace context)'),
       provider: z.string().describe('Provider name (e.g. notion, slack, github, google, stripe)'),
@@ -18,7 +18,7 @@ export const connectorTools = {
       if (input.params) body.params = input.params
       if (input.accountId) body.account_id = input.accountId
       const response = await resourcesRequest(`/v1/connectors/${input.provider}/execute`, { body })
-      return maybeDecodeGmailResponse(input.provider, input.endpoint, response)
+      return transformConnectorResponse(input.provider, input.endpoint, response)
     },
   },
   blink_connector_linked: {
