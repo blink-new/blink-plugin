@@ -16,13 +16,21 @@
  * - large attachments (only attachmentId present, no data): untouched
  */
 
+// base64url uses only [A-Za-z0-9_-]. Already-decoded text will contain
+// spaces, punctuation, HTML tags, etc. — so this check makes the decode
+// idempotent (calling twice won't corrupt already-decoded content).
+const BASE64URL_RE = /^[A-Za-z0-9_-]+$/
+
 function decodeGmailPayload(payload: any): void {
   if (!payload) return
   const body = payload.body
   const mime: string | undefined = payload.mimeType
   if (body?.data && typeof body.data === 'string') {
     if (mime?.startsWith('text/')) {
-      body.data = Buffer.from(body.data, 'base64url').toString('utf-8')
+      if (BASE64URL_RE.test(body.data)) {
+        body.data = Buffer.from(body.data, 'base64url').toString('utf-8')
+      }
+      // else: already decoded (or not base64url) — leave as-is
     } else {
       delete body.data
     }
