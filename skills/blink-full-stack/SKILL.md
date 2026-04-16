@@ -3,6 +3,17 @@ name: blink-full-stack
 description: End-to-end guide for building and shipping a Blink app. Project setup, SDK init, auth, database, backend, deploy, and custom domains. Index to all other skills.
 ---
 
+## Prerequisites
+
+Before building, ensure the Blink CLI is installed and authenticated:
+
+```bash
+npm install -g @blinkdotnew/cli
+blink login
+```
+
+If `blink` is not installed, run the install command first. `blink login` opens the browser to create a workspace API key — follow the prompts and it saves credentials locally.
+
 ## Overview
 
 This is the master guide for building a full-stack Blink app from zero to production. Each section links to a deeper skill.
