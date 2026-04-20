@@ -64,7 +64,7 @@ await blink.connectors.execute('slack', {
 | **LinkedIn** | `linkedin` | `/userinfo`, `/ugcPosts` |
 | **HubSpot** | `hubspot` | `/contacts`, `/companies`, `/deals` |
 | **Salesforce** | `salesforce` | `/query`, `/sobjects/{type}` |
-| **GitHub** | `github` | `/user`, `/repos`, `/issues` |
+| **GitHub** | `github` | `/user`, `/repos`, `/issues` — see `blink-github` skill for clone/push/PR |
 | **Stripe** | `stripe` | `/customers`, `/charges`, `/subscriptions` |
 | **Jira** | `jira` | `/search`, `/issue`, `/project` |
 | **Microsoft** | `microsoft` | `/me`, `/messages`, `/events` |
