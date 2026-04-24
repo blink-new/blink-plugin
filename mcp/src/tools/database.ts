@@ -9,7 +9,7 @@ export const databaseTools = {
       sql: z.string().describe('SQL query to execute'),
     }),
     execute: async (input: { projectId: string; sql: string }) =>
-      resourcesRequest(`/api/db/${input.projectId}/sql`, { body: { sql: input.sql } }),
+      resourcesRequest(`/api/db/${input.projectId}/sql`, { body: { query: input.sql } }),
   },
   blink_db_schema: {
     description: 'Get full database schema — all tables with column names, types, constraints, and primary keys',
@@ -17,7 +17,7 @@ export const databaseTools = {
     execute: async ({ projectId }: { projectId: string }) =>
       resourcesRequest(`/api/db/${projectId}/sql`, {
         body: {
-          sql: "SELECT m.name AS table_name, p.cid, p.name AS column_name, p.type, p.notnull, p.dflt_value, p.pk FROM sqlite_master m JOIN pragma_table_info(m.name) p WHERE m.type='table' ORDER BY m.name, p.cid",
+          query: "SELECT m.name AS table_name, p.cid, p.name AS column_name, p.type, p.notnull, p.dflt_value, p.pk FROM sqlite_master m JOIN pragma_table_info(m.name) p WHERE m.type='table' ORDER BY m.name, p.cid",
         },
       }),
   },

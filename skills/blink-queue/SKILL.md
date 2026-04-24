@@ -5,7 +5,7 @@ description: Background task queue and cron schedules. Enqueue tasks, named FIFO
 
 ## MCP Tools
 
-`blink_queue_enqueue` · `blink_queue_schedule` · `blink_queue_list` · `blink_queue_stats` · `blink_queue_cancel` · `blink_queue_get` · `blink_queue_retry_dead` · `blink_queue_create_queue`
+`blink_queue_enqueue` · `blink_queue_schedule` · `blink_queue_list` · `blink_queue_stats` · `blink_queue_cancel` · `blink_queue_get` · `blink_queue_dlq_retry` · `blink_queue_create_queue`
 
 ## Getting Started
 
