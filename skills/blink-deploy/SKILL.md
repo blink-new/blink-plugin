@@ -24,8 +24,11 @@ blink deploy ./dist
 # List deployments
 blink deployments
 
-# Rollback to a previous deployment
-blink rollback <deployment_id>
+# List saved version snapshots
+blink versions list
+
+# Restore a version snapshot (version rollback)
+blink versions restore <version_id>
 ```
 
 ## Deploy Pipeline

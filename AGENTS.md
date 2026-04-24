@@ -14,8 +14,8 @@ mcp.json                      MCP server config (STDIO: npx @blinkdotnew/mcp)
 mcp/                          MCP server npm package (@blinkdotnew/mcp)
   src/index.ts                STDIO entry — registers all tools
   src/lib/api.ts              HTTP client (blink.new + core.blink.new)
-  src/tools/                  Tool definitions by category (18 files)
-skills/                       14 SKILL.md files for agent domain knowledge
+  src/tools/                  Tool definitions by category (21 files)
+skills/                       15 SKILL.md files for agent domain knowledge
 agents/                       4 agent personas (Claude Code subagents, also works in Cursor)
 rules/                        Persistent coding rules (.mdc for Cursor)
 .claude/rules/                Same rules as .md for Claude Code
@@ -26,7 +26,7 @@ assets/                       logo.svg
 
 | Package            | Version | Repo                     | Auto-publish                                    |
 | ------------------ | ------- | ------------------------ | ----------------------------------------------- |
-| `@blinkdotnew/mcp` | 1.2.x   | `blink-new/blink-plugin` | Push to main + bump `mcp/package.json`          |
+| `@blinkdotnew/mcp` | 1.3.x   | `blink-new/blink-plugin` | Push to main + bump `mcp/package.json`          |
 | `@blinkdotnew/cli` | 0.6.x   | `blink-new/blink-sdk`    | Push to main + bump `packages/cli/package.json` |
 | `@blinkdotnew/sdk` | 2.4.x   | `blink-new/blink-sdk`    | Push to main + bump `packages/sdk/package.json` |
 
