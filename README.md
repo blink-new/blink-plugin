@@ -12,13 +12,13 @@ By [Blink.new](https://blink.new) · [Documentation](https://blink.new/docs) · 
 | **Auth** | Google, GitHub, Apple, Microsoft, email/password — toggle on with one command |
 | **Storage** | S3-backed file uploads with CDN URLs |
 | **Backend** | Hono server on Cloudflare Workers — serverless, globally distributed |
-| **Hosting** | Static site hosting with SSL on `*.sites.blink.new` |
+| **Hosting** | Static site hosting with SSL on `*.blinkpowered.com` |
 | **Queue** | Background tasks + cron scheduling — built-in job processing |
 | **Domains** | Search, purchase, and connect custom domains |
 | **AI Gateway** | Multi-model AI access (OpenAI, Anthropic, Google, Fal, ElevenLabs) |
 | **Realtime** | WebSocket pub/sub for live updates |
 | **RAG** | Knowledge base with semantic search |
-| **Connectors** | 40+ OAuth integrations (Notion, Slack, Discord, Google, GitHub, Stripe, etc.) |
+| **Connectors** | 38 OAuth integrations (Notion, Slack, Discord, Google, etc.) |
 | **Notifications** | Email and SMS delivery |
 
 ## Quick Setup
@@ -57,7 +57,7 @@ The agent will use the MCP tools to create the project, configure auth, set up t
 
 ## What's Included
 
-### Skills (15)
+### Skills (14)
 
 Skills teach your agent how to use each Blink feature end-to-end:
 
@@ -73,9 +73,8 @@ Skills teach your agent how to use each Blink feature end-to-end:
 - **blink-realtime** — WebSocket pub/sub, channels, presence
 - **blink-rag** — Knowledge base, semantic search, document upload
 - **blink-notifications** — Email and SMS delivery
-- **blink-connectors** — OAuth integrations (40+ providers)
+- **blink-connectors** — OAuth integrations (38 providers)
 - **blink-agents** — Cloud agent management and secrets
-- **blink-github** — GitHub operations via Blink GitHub App (clone, push, PR, issues)
 
 ### Agents (4)
 
