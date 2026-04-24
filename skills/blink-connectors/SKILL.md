@@ -21,8 +21,8 @@ blink connector exec slack /conversations GET
 | Tool | Description |
 |------|-------------|
 | `blink_connector_exec` | Execute API call through a connected provider |
-| `blink_connector_providers` | List all available connector providers |
-| `blink_connector_status` | Check if a provider is connected |
+| `blink_connector_linked` | List all OAuth providers currently connected for a project |
+| `blink_connector_status` | Check connection status for a specific provider |
 
 ## Prerequisites
 

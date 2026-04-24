@@ -11,12 +11,14 @@ export const databaseTools = {
     execute: async (input: { projectId: string; sql: string }) =>
       resourcesRequest(`/api/db/${input.projectId}/sql`, { body: { sql: input.sql } }),
   },
-  blink_db_tables: {
-    description: 'List all tables in the project database',
+  blink_db_schema: {
+    description: 'Get full database schema — all tables with column names, types, constraints, and primary keys',
     inputSchema: z.object({ projectId: z.string() }),
     execute: async ({ projectId }: { projectId: string }) =>
       resourcesRequest(`/api/db/${projectId}/sql`, {
-        body: { sql: "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name" },
+        body: {
+          sql: "SELECT m.name AS table_name, p.cid, p.name AS column_name, p.type, p.notnull, p.dflt_value, p.pk FROM sqlite_master m JOIN pragma_table_info(m.name) p WHERE m.type='table' ORDER BY m.name, p.cid",
+        },
       }),
   },
 }

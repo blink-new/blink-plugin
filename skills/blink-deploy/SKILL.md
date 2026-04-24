@@ -5,7 +5,9 @@ description: Build and deploy Blink apps to production. Preview vs production de
 
 ## MCP Tools
 
-`blink_deploy` · `blink_deployments_list` · `blink_rollback`
+`blink_rollback` — Restore a project to a previously saved version snapshot (use `blink_versions_list` to find version IDs).
+
+**Frontend deployment is done via CLI** — `blink deploy ./dist --prod`. The MCP has no deploy tool because agents deploy using the CLI after building.
 
 ## Getting Started
 
