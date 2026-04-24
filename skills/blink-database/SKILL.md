@@ -7,6 +7,9 @@ description: Database CRUD with automatic camelCase conversion. Create, list, up
 
 `blink_db_query` · `blink_db_schema`
 
+- **`blink_db_query`** — Run any SQL query (SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, etc.)
+- **`blink_db_schema`** — Get full schema: all tables with column names, types, nullability, defaults, and primary keys
+
 ## Getting Started
 
 ```bash

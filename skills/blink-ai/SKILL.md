@@ -31,10 +31,13 @@ blink ai call +15551234567 --prompt "Remind about appointment tomorrow at 3pm"
 |------|-------------|
 | `blink_ai_text` | Generate text from prompt or messages |
 | `blink_ai_image` | Generate or edit images |
+| `blink_ai_image_edit` | Edit an existing image using a text prompt |
 | `blink_ai_video` | Generate video from text or image |
+| `blink_ai_animate` | Animate a still image into a video |
 | `blink_ai_speech` | Convert text to audio |
 | `blink_ai_transcribe` | Convert audio to text |
 | `blink_ai_call` | Make AI-powered phone call |
+| `blink_ai_call_status` | Check the status of an AI phone call |
 
 ## SDK Methods
 

@@ -49,6 +49,6 @@ Deploy: `blink backend deploy`
 
 ## Queue tasks
 
-Enqueue: `blink queue enqueue --destination /api/queue --payload '{"taskName":"send-email"}'`
-Schedule: `blink queue schedule --cron "0 * * * *" --destination /api/queue --payload '{"taskName":"hourly-cleanup"}'`
+Enqueue: `blink queue enqueue send-email --payload '{"userId":"123"}'`
+Schedule: `blink queue schedule create daily-report "0 9 * * *" --payload '{"reportType":"daily"}'`
 Tasks are HTTP POST requests delivered to the backend.

@@ -18,6 +18,6 @@ export const versionTools = {
     description: 'Restore a project to a saved version',
     inputSchema: z.object({ projectId: z.string(), versionId: z.string() }),
     execute: async (input: { projectId: string; versionId: string }) =>
-      appRequest('/api/versions/restore', { body: { projectId: input.projectId, identifier: input.versionId } }),
+      appRequest('/api/versions/restore', { body: { projectId: input.projectId, identifier: input.versionId, authToken: process.env.BLINK_API_KEY ?? '' } }),
   },
 }

@@ -62,8 +62,9 @@ Use the `blink_connector_exec` tool with `provider: "github"`:
 {
   "tool": "blink_connector_exec",
   "provider": "github",
-  "method": "/repos/owner/repo/issues",
-  "http_method": "POST",
+  "projectId": "proj_xxx",
+  "endpoint": "/repos/owner/repo/issues",
+  "httpMethod": "POST",
   "params": { "title": "Bug", "body": "Details..." }
 }
 ```

@@ -17,9 +17,9 @@ blink agent list
 blink agent status <agent-id>
 
 # Manage agent secrets
-blink secrets list <agent-id>
-blink secrets set <agent-id> MY_API_KEY=sk-123
-blink secrets delete <agent-id> MY_API_KEY
+blink secrets list --agent <agent-id>
+blink secrets set MY_API_KEY sk-123 --agent <agent-id>
+blink secrets delete MY_API_KEY --agent <agent-id>
 ```
 
 ## MCP Tools
@@ -28,9 +28,9 @@ blink secrets delete <agent-id> MY_API_KEY
 |------|-------------|
 | `blink_agent_list` | List all Claw agents in the workspace |
 | `blink_agent_status` | Get agent status, machine info, and health |
-| `blink_secrets_list` | List secret names for an agent |
-| `blink_secrets_set` | Set a secret on an agent |
-| `blink_secrets_delete` | Delete a secret from an agent |
+| `blink_agent_secrets_list` | List secret names for an agent |
+| `blink_agent_secrets_set` | Set a secret on an agent |
+| `blink_agent_secrets_delete` | Delete a secret from an agent |
 
 ## Agent Lifecycle
 
@@ -61,17 +61,17 @@ blink agent status ag_a1b2c3d4
 # Memory: 512MB / 1GB
 
 # Set environment secrets
-blink secrets set ag_a1b2c3d4 OPENAI_API_KEY=sk-abc123
-blink secrets set ag_a1b2c3d4 TELEGRAM_BOT_TOKEN=123456:ABC
+blink secrets set OPENAI_API_KEY sk-abc123 --agent ag_a1b2c3d4
+blink secrets set TELEGRAM_BOT_TOKEN 123456:ABC --agent ag_a1b2c3d4
 
 # List secrets (values hidden)
-blink secrets list ag_a1b2c3d4
+blink secrets list --agent ag_a1b2c3d4
 # Output:
 # OPENAI_API_KEY     ****abc123
 # TELEGRAM_BOT_TOKEN ****ET:ABC
 
 # Remove a secret
-blink secrets delete ag_a1b2c3d4 OPENAI_API_KEY
+blink secrets delete OPENAI_API_KEY --agent ag_a1b2c3d4
 ```
 
 ## Use Cases

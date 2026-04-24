@@ -27,6 +27,7 @@ blink phone buy --area-code 415
 | `blink_sms_send` | Send SMS message |
 | `blink_phone_list` | List owned phone numbers |
 | `blink_phone_buy` | Purchase a phone number |
+| `blink_phone_release` | Release a phone number permanently (stops billing) |
 
 ## Email
 

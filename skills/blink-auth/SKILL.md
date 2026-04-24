@@ -7,7 +7,7 @@ description: Authentication with managed and headless modes. Social providers, e
 
 ## MCP Tools
 
-`blink_auth_config_get` · `blink_auth_config_set`
+`blink_auth_get_config` · `blink_auth_set_config`
 
 ## Getting Started
 

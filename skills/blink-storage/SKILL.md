@@ -3,6 +3,14 @@ name: blink-storage
 description: File upload with progress tracking and public URLs. Download, remove files. CLI for management. Extension auto-detection.
 ---
 
+## MCP Tools
+
+| Tool | Description |
+|------|-------------|
+| `blink_storage_list` | List files in project storage with optional path prefix |
+| `blink_storage_url` | Get the public CDN URL for a stored file |
+| `blink_storage_delete` | Delete a file from storage |
+
 ## Getting Started
 
 ```bash
