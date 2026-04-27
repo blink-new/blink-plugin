@@ -11,7 +11,7 @@ export const queueTools = {
     inputSchema: z.object({
       projectId: z.string(),
       taskName: z.string(),
-      payload: z.record(z.unknown()).optional(),
+      payload: z.record(z.string(), z.unknown()).optional(),
       queue: z.string().optional().describe('Named queue for FIFO ordering'),
       delay: z.string().optional().describe('Delay (e.g. 30s, 5m)'),
       retries: z.number().optional().default(3),
@@ -29,7 +29,7 @@ export const queueTools = {
       projectId: z.string(),
       name: z.string(),
       cron: z.string().describe('Cron expression (e.g. "0 9 * * *")'),
-      payload: z.record(z.unknown()).optional(),
+      payload: z.record(z.string(), z.unknown()).optional(),
       timezone: z.string().optional().default('UTC'),
     }),
     execute: async (input: { projectId: string; name: string; cron: string; payload?: Record<string, unknown>; timezone?: string }) => {

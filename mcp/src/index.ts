@@ -49,7 +49,7 @@ const allTools = {
 
 const server = new McpServer({
   name: 'blink',
-  version: '1.3.1',
+  version: '1.3.2',
 })
 
 for (const [name, tool] of Object.entries(allTools)) {

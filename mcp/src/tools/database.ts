@@ -1,5 +1,11 @@
 import { z } from 'zod'
-import { resourcesRequest } from '../lib/api.js'
+import { appRequest } from '../lib/api.js'
+
+// Uses the management API (blink.new/api/v1/projects/{id}/databases/sql) which accepts
+// workspace API keys (blnk_ak_*). This avoids requiring a project secret key for DB queries.
+function dbRequest(projectId: string, sql: string) {
+  return appRequest(`/api/v1/projects/${projectId}/databases/sql`, { body: { sql } })
+}
 
 export const databaseTools = {
   blink_db_query: {
@@ -9,16 +15,12 @@ export const databaseTools = {
       sql: z.string().describe('SQL query to execute'),
     }),
     execute: async (input: { projectId: string; sql: string }) =>
-      resourcesRequest(`/api/db/${input.projectId}/sql`, { body: { query: input.sql } }),
+      dbRequest(input.projectId, input.sql),
   },
   blink_db_schema: {
-    description: 'Get full database schema — all tables with column names, types, constraints, and primary keys',
+    description: "List all tables in the project database. To inspect columns for a specific table, use blink_db_query with: PRAGMA table_info('tablename')",
     inputSchema: z.object({ projectId: z.string() }),
     execute: async ({ projectId }: { projectId: string }) =>
-      resourcesRequest(`/api/db/${projectId}/sql`, {
-        body: {
-          query: "SELECT m.name AS table_name, p.cid, p.name AS column_name, p.type, p.notnull, p.dflt_value, p.pk FROM sqlite_master m JOIN pragma_table_info(m.name) p WHERE m.type='table' ORDER BY m.name, p.cid",
-        },
-      }),
+      dbRequest(projectId, "SELECT name, sql FROM sqlite_master WHERE type='table' ORDER BY name"),
   },
 }
