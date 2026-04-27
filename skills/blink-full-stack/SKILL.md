@@ -87,11 +87,11 @@ blink backend deploy
 npm run build
 # Always pass project ID explicitly
 blink deploy <project_id> ./dist --prod
+# → site is live immediately at https://{project_slug}.blinkpowered.com
+# The CLI prints the URL. Do NOT call blink_hosting_activate after this.
 ```
 
-Then activate hosting via MCP:
-- `blink_hosting_activate` — makes the site live (required after first deploy)
-- `blink_hosting_status` — confirms URL and HTTP 200
+**Do NOT call `blink_hosting_activate`** — for externally-built apps it overwrites your files with the Blink AI template.
 
 → Full details: see `blink-deploy` skill
 

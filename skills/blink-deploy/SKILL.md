@@ -36,20 +36,33 @@ blink versions list
 blink versions restore <version_id>
 ```
 
-## Important: Deploy vs Hosting Activation
+## Two hosting systems — do NOT mix them
 
-`blink deploy` uploads your files — but the site is not live until hosting is activated.
+Blink has two separate hosting paths. **Never call `blink_hosting_activate` after `blink deploy`.**
 
-After every production deploy:
-1. Run `blink deploy <project_id> ./dist --prod` — uploads files
-2. Call `blink_hosting_activate` MCP tool — makes the site live
-3. Call `blink_hosting_status` — confirm URL is set and HTTP 200
-
+### Path A — CLI deploy (for externally-built apps)
+```bash
+blink deploy <project_id> ./dist --prod
+# → live immediately at https://{project_slug}.blinkpowered.com
+# → NO further steps needed. DO NOT call blink_hosting_activate.
 ```
-blink deploy → uploads files → site NOT live yet
-blink_hosting_activate → activates hosting → site IS live
-blink_hosting_status → shows hosting_prod_url
+The URL is printed by the CLI after deploy. `blink_hosting_status` may still show `inactive` — this is a display lag, the site IS live.
+
+### Path B — Blink sandbox activation (for projects built in the Blink AI editor)
+```bash
+blink_hosting_activate  # only for sandbox-based projects
+# → triggers a fresh build from the Blink sandbox and deploys
 ```
+
+**Why you must not mix them:**  
+`blink_hosting_activate` rebuilds from the Blink sandbox and **overwrites** the S3 files that `blink deploy` uploaded. Calling activate after a CLI deploy replaces your app with the Blink AI template.
+
+### Summary
+| Scenario | Command | URL |
+|----------|---------|-----|
+| App built externally (Vite/Next/React) | `blink deploy <id> ./dist --prod` | `{slug}.blinkpowered.com` |
+| App built in Blink AI editor | `blink_hosting_activate` | `{slug}.blinkpowered.com` |
+| Preview / test URL | `blink deploy <id> ./dist` (no --prod) | `{id}.sites.blink.new` |
 
 ## Deploy Pipeline
 

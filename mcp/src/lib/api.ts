@@ -31,7 +31,10 @@ async function request(baseUrl: string, path: string, opts: RequestOpts = {}, au
     try {
       const parsed = JSON.parse(text)
       const err = parsed.error ?? parsed.message
-      msg = typeof err === 'string' ? err : (err ? JSON.stringify(err) : msg)
+      const errStr = typeof err === 'string' ? err : (err ? JSON.stringify(err) : msg)
+      // Append parsed.message if it contains more detail than the error code alone
+      const detail = (parsed.message && parsed.message !== parsed.error) ? ` — ${parsed.message}` : ''
+      msg = errStr + detail
     } catch {}
     throw new Error(msg)
   }
