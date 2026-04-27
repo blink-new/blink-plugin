@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { resourcesRequest } from '../lib/api.js'
+import { projectResourcesRequest } from '../lib/api.js'
 
 export const ragTools = {
   blink_rag_search: {
@@ -12,7 +12,7 @@ export const ragTools = {
     }),
     execute: async (input: { projectId: string; query: string; limit?: number; ai?: boolean }) => {
       const path = input.ai ? 'ai-search' : 'search'
-      return resourcesRequest(`/api/rag/${input.projectId}/${path}`, {
+      return projectResourcesRequest(input.projectId, `/api/rag/${input.projectId}/${path}`, {
         body: { query: input.query, limit: input.limit ?? 5 },
       })
     },
@@ -21,6 +21,6 @@ export const ragTools = {
     description: 'List knowledge base collections',
     inputSchema: z.object({ projectId: z.string() }),
     execute: async ({ projectId }: { projectId: string }) =>
-      resourcesRequest(`/api/rag/${projectId}/collections`),
+      projectResourcesRequest(projectId, `/api/rag/${projectId}/collections`),
   },
 }

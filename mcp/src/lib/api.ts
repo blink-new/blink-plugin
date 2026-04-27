@@ -12,8 +12,9 @@ interface RequestOpts {
   body?: unknown
 }
 
-async function request(baseUrl: string, path: string, opts: RequestOpts = {}): Promise<unknown> {
-  const headers: Record<string, string> = { Authorization: `Bearer ${getToken()}` }
+async function request(baseUrl: string, path: string, opts: RequestOpts = {}, authToken?: string): Promise<unknown> {
+  const token = authToken ?? getToken()
+  const headers: Record<string, string> = { Authorization: `Bearer ${token}` }
   let body: string | undefined
   if (opts.body) {
     headers['Content-Type'] = 'application/json'
@@ -29,7 +30,8 @@ async function request(baseUrl: string, path: string, opts: RequestOpts = {}): P
     let msg = `HTTP ${res.status}`
     try {
       const parsed = JSON.parse(text)
-      msg = parsed.error ?? parsed.message ?? msg
+      const err = parsed.error ?? parsed.message
+      msg = typeof err === 'string' ? err : (err ? JSON.stringify(err) : msg)
     } catch {}
     throw new Error(msg)
   }
@@ -44,6 +46,31 @@ export function appRequest(path: string, opts: RequestOpts = {}) {
 
 export function resourcesRequest(path: string, opts: RequestOpts = {}) {
   return request(API_URL, path, opts)
+}
+
+// Cache of projectId → project secret key (blnk_sk_*)
+// Used for core.blink.new requests that require server-to-server auth
+const secretKeyCache = new Map<string, string>()
+
+async function getProjectSecretKey(projectId: string): Promise<string> {
+  if (secretKeyCache.has(projectId)) return secretKeyCache.get(projectId)!
+  const res = await appRequest(`/api/project/${projectId}/api-keys/reveal`, {
+    method: 'POST',
+    body: { type: 'secret' },
+  }) as any
+  const key = res?.key
+  if (!key || typeof key !== 'string') {
+    throw new Error(`Could not obtain project secret key for ${projectId}. Go to blink.new and ensure the project exists.`)
+  }
+  secretKeyCache.set(projectId, key)
+  return key
+}
+
+// Makes a request to core.blink.new using the project secret key (blnk_sk_*).
+// Automatically fetches and caches the key on first use per project.
+export async function projectResourcesRequest(projectId: string, path: string, opts: RequestOpts = {}): Promise<unknown> {
+  const secretKey = await getProjectSecretKey(projectId)
+  return request(API_URL, path, opts, secretKey)
 }
 
 export function getProjectId(): string {

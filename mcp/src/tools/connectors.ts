@@ -10,7 +10,7 @@ export const connectorTools = {
       provider: z.string().describe('Provider name (e.g. notion, slack, github, google, stripe)'),
       endpoint: z.string().describe('API endpoint path (e.g. /search, /users/me)'),
       httpMethod: z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']).optional().default('GET'),
-      params: z.record(z.unknown()).optional().describe('Request body or query params (JSON)'),
+      params: z.record(z.string(), z.unknown()).optional().describe('Request body or query params (JSON)'),
       accountId: z.string().optional().describe('Account ID if multiple accounts connected'),
     }),
     execute: async (input: { projectId: string; provider: string; endpoint: string; httpMethod?: string; params?: Record<string, unknown>; accountId?: string }) => {
