@@ -39,4 +39,13 @@ export const projectTools = {
     execute: async ({ projectId }: { projectId: string }) =>
       appRequest(`/api/projects/${projectId}`, { method: 'DELETE' }),
   },
+  blink_project_keys: {
+    description: 'Get the publishable API key for a project (blnk_pk_...). Required to initialize the Blink SDK in your app. Call this after blink_project_create.',
+    inputSchema: z.object({ projectId: z.string() }),
+    execute: async ({ projectId }: { projectId: string }) =>
+      appRequest(`/api/project/${projectId}/api-keys/reveal`, {
+        method: 'POST',
+        body: { type: 'publishable' },
+      }),
+  },
 }

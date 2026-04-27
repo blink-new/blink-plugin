@@ -47,6 +47,13 @@ Sign up at [blink.new](https://blink.new), then go to [Settings → API Keys](ht
 
 **Codex** — Add to `.mcp.json` at your project root (same config).
 
+> **Using nvm?** If Cursor can't find `npx`, use the absolute path to node instead:
+> ```json
+> { "command": "/Users/yourname/.nvm/versions/node/v22.0.0/bin/node",
+>   "args": ["-e", "require('child_process').spawn('npx',['-y','@blinkdotnew/mcp'],{stdio:'inherit',env:{...process.env,BLINK_API_KEY:'blnk_ak_...'}})"] }
+> ```
+> Or simpler: add to your **global** `~/.cursor/mcp.json` instead of a project file — global configs inherit the full shell PATH.
+
 ### 3. Start Building
 
 Ask your agent:

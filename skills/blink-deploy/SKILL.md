@@ -15,20 +15,40 @@ description: Build and deploy Blink apps to production. Preview vs production de
 # Build your app
 npm run build
 
-# Deploy to production
+# Deploy to production — always pass project ID explicitly to avoid "No project context" errors
+blink deploy <project_id> ./dist --prod
+
+# OR: link the project first, then deploy without ID
+blink link <project_id>
 blink deploy ./dist --prod
 
-# Preview deploy (temporary URL)
-blink deploy ./dist
+# After deploying, activate hosting (required to get a live URL)
+# Use blink_hosting_activate MCP tool, or:
+blink hosting activate <project_id>   # if CLI has this command
 
-# List deployments
-blink deployments
+# Preview deploy (temporary URL, no activation needed)
+blink deploy <project_id> ./dist
 
 # List saved version snapshots
 blink versions list
 
 # Restore a version snapshot (version rollback)
 blink versions restore <version_id>
+```
+
+## Important: Deploy vs Hosting Activation
+
+`blink deploy` uploads your files — but the site is not live until hosting is activated.
+
+After every production deploy:
+1. Run `blink deploy <project_id> ./dist --prod` — uploads files
+2. Call `blink_hosting_activate` MCP tool — makes the site live
+3. Call `blink_hosting_status` — confirm URL is set and HTTP 200
+
+```
+blink deploy → uploads files → site NOT live yet
+blink_hosting_activate → activates hosting → site IS live
+blink_hosting_status → shows hosting_prod_url
 ```
 
 ## Deploy Pipeline
