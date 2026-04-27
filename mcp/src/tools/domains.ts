@@ -9,7 +9,7 @@ export const domainTools = {
       appRequest(`/api/project/${projectId}/domains`),
   },
   blink_domains_add: {
-    description: 'Add a custom domain to a project',
+    description: 'Add a custom domain to a project. Requires Pro+ plan.',
     inputSchema: z.object({ projectId: z.string(), domain: z.string() }),
     execute: async (input: { projectId: string; domain: string }) =>
       appRequest(`/api/project/${input.projectId}/domains`, { body: { domain: input.domain } }),

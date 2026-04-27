@@ -7,7 +7,7 @@ function queuePath(pid: string, path: string) {
 
 export const queueTools = {
   blink_queue_enqueue: {
-    description: 'Enqueue a background task. Delivered to backend at /api/queue.',
+    description: 'Enqueue a background task. Delivered to backend at /api/queue. Requires Pro+ plan (needs deployed backend).',
     inputSchema: z.object({
       projectId: z.string(),
       taskName: z.string(),

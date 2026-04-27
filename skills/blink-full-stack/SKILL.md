@@ -21,12 +21,13 @@ This is the master guide for building a full-stack Blink app from zero to produc
 ## Step 1 — Project Setup
 
 ```bash
-# Create project via CLI
-blink init my-app --template next
-
-# Install SDK
-cd my-app && bun add @blinkdotnew/sdk
+# Install SDK in your app directory
+bun add @blinkdotnew/sdk
 ```
+
+Or use MCP tools:
+1. `blink_project_create` — creates the project, returns `id`
+2. `blink_project_keys` — returns the `publishableKey` (`blnk_pk_...`) — **call this after create**
 
 ## Step 2 — SDK Initialization
 
@@ -84,8 +85,13 @@ blink backend deploy
 
 ```bash
 npm run build
-blink deploy ./dist --prod
+# Always pass project ID explicitly
+blink deploy <project_id> ./dist --prod
 ```
+
+Then activate hosting via MCP:
+- `blink_hosting_activate` — makes the site live (required after first deploy)
+- `blink_hosting_status` — confirms URL and HTTP 200
 
 → Full details: see `blink-deploy` skill
 

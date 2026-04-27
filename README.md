@@ -47,6 +47,8 @@ Sign up at [blink.new](https://blink.new), then go to [Settings → API Keys](ht
 
 **Codex** — Add to `.mcp.json` at your project root (same config).
 
+> **MCP not connecting?** Add the config to your global `~/.cursor/mcp.json` instead of a project file — this resolves PATH issues on most setups.
+
 ### 3. Start Building
 
 Ask your agent:

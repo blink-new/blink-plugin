@@ -3,7 +3,7 @@ import { appRequest } from '../lib/api.js'
 
 export const backendTools = {
   blink_backend_deploy: {
-    description: 'Deploy backend files to Cloudflare Workers. Send all backend/*.ts files as source code.',
+    description: 'Deploy backend files to Cloudflare Workers. Send all backend/*.ts files as source code. Requires Pro+ plan.',
     inputSchema: z.object({
       projectId: z.string(),
       files: z.array(z.object({
@@ -15,13 +15,13 @@ export const backendTools = {
       appRequest(`/api/v1/projects/${input.projectId}/backend/deploy`, { body: { files: input.files } }),
   },
   blink_backend_status: {
-    description: 'Check backend deployment status, tier, and request count',
+    description: 'Check backend deployment status, tier, and request count. Requires Pro+ plan.',
     inputSchema: z.object({ projectId: z.string() }),
     execute: async ({ projectId }: { projectId: string }) =>
       appRequest(`/api/v1/projects/${projectId}/backend/status`),
   },
   blink_backend_logs: {
-    description: 'View recent backend request logs',
+    description: 'View recent backend request logs. Requires Pro+ plan.',
     inputSchema: z.object({
       projectId: z.string(),
       slug: z.string().default('index'),
