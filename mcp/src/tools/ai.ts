@@ -17,11 +17,14 @@ export const aiTools = {
     description: 'Generate an image from a text prompt',
     inputSchema: z.object({
       prompt: z.string(),
-      model: z.string().optional().describe('e.g. fal-ai/flux-pro/v1.1'),
+      model: z.string().optional().describe('e.g. google/gemini-2.5-flash-image, openai/gpt-image-1'),
       n: z.number().optional().default(1),
     }),
-    execute: async (input: { prompt: string; model?: string; n?: number }) =>
-      resourcesRequest('/api/v1/ai/image', { body: { prompt: input.prompt, model: input.model, n: input.n ?? 1 } }),
+    execute: async (input: { prompt: string; model?: string; n?: number }) => {
+      const raw = await resourcesRequest('/api/v1/ai/image', { body: { prompt: input.prompt, model: input.model, n: input.n ?? 1 } }) as any
+      // Normalize: API may return { result: { data: [...] } } (Vercel AI Gateway) or { data: [...] } (legacy)
+      return raw?.result ?? raw
+    },
   },
   blink_ai_video: {
     description: 'Generate a video from a text prompt (takes 1-2 minutes)',
@@ -69,8 +72,10 @@ export const aiTools = {
       imageUrl: z.string().describe('URL of the source image to edit'),
       model: z.string().optional(),
     }),
-    execute: async (input: { prompt: string; imageUrl: string; model?: string }) =>
-      resourcesRequest('/api/v1/ai/image', { body: { prompt: input.prompt, image: input.imageUrl, model: input.model } }),
+    execute: async (input: { prompt: string; imageUrl: string; model?: string }) => {
+      const raw = await resourcesRequest('/api/v1/ai/image', { body: { prompt: input.prompt, image: input.imageUrl, model: input.model } }) as any
+      return raw?.result ?? raw
+    },
   },
   blink_ai_animate: {
     description: 'Animate a still image into a video',

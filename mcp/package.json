@@ -1,6 +1,6 @@
 {
   "name": "@blinkdotnew/mcp",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "Blink MCP Server — serverless cloud infrastructure for agentic coding. Gives your AI coding agent full access to managed SQL databases, authentication, file storage, serverless backends, task queues, custom domains, and production hosting.",
   "bin": {
     "blink-mcp": "dist/index.js"
