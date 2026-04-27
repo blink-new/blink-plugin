@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { resourcesRequest } from '../lib/api.js'
+import { resourcesRequest, projectResourcesRequest } from '../lib/api.js'
 
 export const notificationTools = {
   blink_notify_email: {
@@ -10,8 +10,13 @@ export const notificationTools = {
       subject: z.string(),
       body: z.string().describe('Email body (plain text or HTML)'),
     }),
+    // Uses projectResourcesRequest because /api/notifications/:project_id/email
+    // requires a project secret key (blnk_sk_*) — workspace API keys are rejected
+    // by the CORS middleware for project-scoped resource endpoints
     execute: async (input: { projectId: string; to: string; subject: string; body: string }) =>
-      resourcesRequest(`/api/notifications/${input.projectId}/email`, { body: { to: input.to, subject: input.subject, body: input.body } }),
+      projectResourcesRequest(input.projectId, `/api/notifications/${input.projectId}/email`, {
+        body: { to: input.to, subject: input.subject, body: input.body },
+      }),
   },
   blink_sms_send: {
     description: 'Send an SMS message from your workspace phone number',
@@ -20,6 +25,7 @@ export const notificationTools = {
       message: z.string(),
       from: z.string().optional().describe('Sender phone number (defaults to workspace primary)'),
     }),
+    // /api/v1/sms/send uses requireV1Auth which accepts workspace API keys — no change needed
     execute: async (input: { to: string; message: string; from?: string }) =>
       resourcesRequest('/api/v1/sms/send', { body: input }),
   },

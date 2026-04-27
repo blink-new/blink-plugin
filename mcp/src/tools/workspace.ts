@@ -19,17 +19,31 @@ export const workspaceTools = {
       appRequest(`/api/project/${projectId}/security`),
   },
   blink_security_set: {
-    description: 'Set require_auth for a specific module',
+    description: 'Set require_auth for a specific module (db, ai, storage, realtime, rag)',
     inputSchema: z.object({
       projectId: z.string(),
       module: z.string().describe('db, ai, storage, realtime, rag'),
       requireAuth: z.boolean(),
     }),
-    execute: async (input: { projectId: string; module: string; requireAuth: boolean }) =>
-      appRequest(`/api/project/${input.projectId}/security`, {
+    execute: async (input: { projectId: string; module: string; requireAuth: boolean }) => {
+      // The security PUT endpoint requires the full policy object (version + defaults + modules).
+      // Fetch current policy, merge the module change, then PUT the complete valid policy.
+      const current = await appRequest(`/api/project/${input.projectId}/security`) as any
+      const base = current?.policy ?? { version: 1, defaults: { require_auth: true }, modules: {} }
+      const merged = {
+        ...base,
+        version: 1,
+        defaults: base.defaults ?? { require_auth: true },
+        modules: {
+          ...base.modules,
+          [input.module]: { ...(base.modules?.[input.module] ?? {}), require_auth: input.requireAuth },
+        },
+      }
+      return appRequest(`/api/project/${input.projectId}/security`, {
         method: 'PUT',
-        body: { policy: { modules: { [input.module]: { require_auth: input.requireAuth } } } },
-      }),
+        body: { policy: merged },
+      })
+    },
   },
   blink_cors_set: {
     description: 'Set allowed CORS origins for a project',

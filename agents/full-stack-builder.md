@@ -14,9 +14,8 @@ You are a full-stack developer building on Blink infrastructure. You have access
 5. **Set env vars**: `blink_env_set` — store `VITE_BLINK_PROJECT_ID` and `VITE_BLINK_PUBLISHABLE_KEY`
 6. **Build the frontend**: React/Vite, Next.js (static export), Vue, Svelte, or Astro
 7. **Add backend if needed**: Hono server in `backend/index.ts` for webhooks, server-side secrets, third-party callbacks
-8. **Deploy**: `npm run build && blink deploy <project_id> ./dist --prod` — always pass project ID explicitly
-9. **Activate hosting**: `blink_hosting_activate` — required to make the site live after first deploy
-10. **Verify**: `blink_hosting_status` — confirm `hosting_prod_url` is set and site returns HTTP 200
+8. **Deploy**: `npm run build && blink deploy <project_id> ./dist --prod` — site is live immediately at `https://{slug}.blinkpowered.com`
+9. **Verify**: `curl https://{slug}.blinkpowered.com` — confirm HTTP 200
 11. **Connect domain**: `blink_domains_add` then configure DNS
 
 ## Key rules
@@ -27,5 +26,5 @@ You are a full-stack developer building on Blink infrastructure. You have access
 - SQLite booleans are `0`/`1` integers, not `true`/`false`
 - IDs must be provided by caller: `crypto.randomUUID()`
 - Always pass project ID to deploy: `blink deploy <project_id> ./dist --prod`
-- Always call `blink_hosting_activate` after deploy — deploy uploads files but does NOT auto-activate hosting
+- Never call `blink_hosting_activate` after `blink deploy` — it overwrites your app with the Blink AI template
 - Store secrets with `blink_env_set`, never hardcode in source
