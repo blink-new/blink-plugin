@@ -6,16 +6,18 @@ export const notificationTools = {
     description: 'Send an email notification',
     inputSchema: z.object({
       projectId: z.string(),
-      to: z.string().describe('Recipient email'),
+      to: z.string().describe('Recipient email address'),
       subject: z.string(),
-      body: z.string().describe('Email body (plain text or HTML)'),
+      html: z.string().optional().describe('HTML email body'),
+      text: z.string().optional().describe('Plain text email body'),
     }),
     // Uses projectResourcesRequest because /api/notifications/:project_id/email
     // requires a project secret key (blnk_sk_*) — workspace API keys are rejected
-    // by the CORS middleware for project-scoped resource endpoints
-    execute: async (input: { projectId: string; to: string; subject: string; body: string }) =>
+    // by the CORS middleware for project-scoped resource endpoints.
+    // API requires `html` or `text` (not `body`) as the email content field.
+    execute: async (input: { projectId: string; to: string; subject: string; html?: string; text?: string }) =>
       projectResourcesRequest(input.projectId, `/api/notifications/${input.projectId}/email`, {
-        body: { to: input.to, subject: input.subject, body: input.body },
+        body: { to: input.to, subject: input.subject, html: input.html, text: input.text },
       }),
   },
   blink_sms_send: {
