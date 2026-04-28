@@ -24,6 +24,8 @@ blink auth-config set --provider email --enabled true
 
 Redirects to hosted auth page. Best for websites and MVPs. **Not for mobile.**
 
+> **CRITICAL**: In managed mode, ONLY `blink.auth.login()` and `blink.auth.logout()` are available. Calling `signInWithGoogle()`, `signInWithEmail()`, or any other auth method will throw: `"signInWithGoogle is only available in headless mode"`. If you need a custom auth UI, use headless mode instead.
+
 ```typescript
 const blink = createClient({
   projectId: import.meta.env.VITE_BLINK_PROJECT_ID || 'your-project-id',
@@ -31,25 +33,30 @@ const blink = createClient({
   auth: { mode: 'managed' },
 })
 
-blink.auth.login()                            // Redirects to blink.new/auth
-blink.auth.login('https://app.com/dashboard') // Custom redirect after login
-blink.auth.logout()
+blink.auth.login()                            // ✅ Redirects to blink.new/auth
+blink.auth.login('https://app.com/dashboard') // ✅ Custom redirect after login
+blink.auth.logout()                           // ✅ Sign out
+
+// ❌ These ALL throw in managed mode:
+// blink.auth.signInWithGoogle()
+// blink.auth.signInWithEmail(email, password)
+// blink.auth.signUp({ email, password })
 ```
 
 ### Headless Mode (Custom UI)
 
-Full control. **Required for mobile (Expo/React Native).**
+Full control over the auth UI. **Required for mobile (Expo/React Native) and any custom sign-in form.**
 
 ```typescript
 const blink = createClient({
   projectId: import.meta.env.VITE_BLINK_PROJECT_ID || 'your-project-id',
   publishableKey: import.meta.env.VITE_BLINK_PUBLISHABLE_KEY || 'blnk_pk_xxx',
-  auth: { mode: 'headless' },
+  auth: { mode: 'headless' },  // ← must be headless for all methods below
 })
 
 await blink.auth.signUp({ email, password })
 await blink.auth.signInWithEmail(email, password)
-await blink.auth.signInWithGoogle()
+await blink.auth.signInWithGoogle()    // ✅ only works in headless mode
 await blink.auth.signInWithGitHub()
 await blink.auth.signInWithApple()
 await blink.auth.signInWithMicrosoft()

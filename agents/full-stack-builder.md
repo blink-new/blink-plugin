@@ -21,7 +21,10 @@ You are a full-stack developer building on Blink infrastructure. You have access
 ## Key rules
 
 - Always call `blink_project_keys` after `blink_project_create` to get the publishable key
-- Initialize SDK with `projectId` and `publishableKey` — both required: `createClient({ projectId, publishableKey, auth: { mode: 'managed' } })`
+- **Auth mode is critical** — choose ONE and be consistent throughout the entire app:
+  - `mode: 'managed'` → ONLY use `blink.auth.login()` and `blink.auth.logout()`. Never call `signInWithGoogle()`, `signInWithEmail()`, or any other method — they throw.
+  - `mode: 'headless'` → use `signInWithGoogle()`, `signInWithEmail()`, `signUp()` etc. for a custom auth UI.
+- Initialize SDK: `createClient({ projectId, publishableKey, auth: { mode: 'managed' } })` (or headless if building custom auth UI)
 - Use `blink.db.table<T>('tablename')` in TypeScript (NOT `blink.db.tablename` — causes type error)
 - SQLite booleans are `0`/`1` integers, not `true`/`false`
 - IDs must be provided by caller: `crypto.randomUUID()`
