@@ -95,7 +95,36 @@ blink deploy <project_id> ./dist --prod
 
 → Full details: see `blink-deploy` skill
 
-## Step 7 — Custom Domain
+## Step 7 — Save Project Context
+
+After deploying, write `AGENTS.md` at the project root using the **actual values from this session** — real project ID, real publishable key, real live URL, real SQL. Do NOT use placeholders like `{project_id}`.
+
+```markdown
+# Blink Project
+
+## Project
+- **ID**: `actual-project-id-here`
+- **Live URL**: `https://actual-project-id.blinkpowered.com`
+- **Publishable Key**: `blnk_pk_actualKeyHere`
+
+## Deploy
+npm run build && blink deploy actual-project-id ./dist --prod
+
+## Database
+CREATE TABLE tasks (id TEXT PRIMARY KEY, title TEXT NOT NULL, ...)
+
+## Auth: headless (or managed)
+```
+
+Also write `CLAUDE.md`:
+```markdown
+# Claude Context
+@AGENTS.md
+```
+
+→ With these files in place, any agent opening this directory immediately knows the Blink setup — project ID, keys, schema, deploy command — no re-prompting ever needed.
+
+## Step 8 — Custom Domain
 
 ```bash
 blink domains add myapp.com
