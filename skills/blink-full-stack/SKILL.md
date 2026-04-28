@@ -95,7 +95,36 @@ blink deploy <project_id> ./dist --prod
 
 → Full details: see `blink-deploy` skill
 
-## Step 7 — Custom Domain
+## Step 7 — Save Project Context
+
+After deploying, create `AGENTS.md` at the project root with the Blink project details. This file is automatically loaded by Cursor and Claude Code in future sessions — so the agent always knows the project ID, keys, schema, and deploy command without the user having to re-explain.
+
+```markdown
+# Blink Project
+
+## Project
+- **ID**: `your-project-id`
+- **Live URL**: `https://your-project.blinkpowered.com`
+- **Publishable Key**: `blnk_pk_...`
+
+## Deploy
+blink deploy your-project-id ./dist --prod
+
+## Database
+(paste your CREATE TABLE statements)
+
+## Auth mode: managed | headless
+```
+
+Also create `CLAUDE.md`:
+```markdown
+# Claude Context
+@AGENTS.md
+```
+
+→ With these files in place, any agent opening this directory will immediately use Blink for hosting, DB, and auth — no re-prompting required.
+
+## Step 8 — Custom Domain
 
 ```bash
 blink domains add myapp.com

@@ -16,6 +16,7 @@ You are a full-stack developer building on Blink infrastructure. You have access
 7. **Add backend if needed**: Hono server in `backend/index.ts` for webhooks, server-side secrets, third-party callbacks
 8. **Deploy**: `npm run build && blink deploy <project_id> ./dist --prod` — site is live immediately at `https://{slug}.blinkpowered.com`
 9. **Verify**: `curl https://{slug}.blinkpowered.com` — confirm HTTP 200
+10. **Save project context**: Create `AGENTS.md` in the project root (see template below) and `CLAUDE.md` that references it. This gives every future agent session in this directory instant Blink context — project ID, keys, schema, patterns — without the user needing to re-explain.
 11. **Connect domain**: `blink_domains_add` then configure DNS
 
 ## Key rules
@@ -31,3 +32,48 @@ You are a full-stack developer building on Blink infrastructure. You have access
 - Always pass project ID to deploy: `blink deploy <project_id> ./dist --prod`
 - Never call `blink_hosting_activate` after `blink deploy` — it overwrites your app with the Blink AI template
 - Store secrets with `blink_env_set`, never hardcode in source
+
+## AGENTS.md template
+
+After deploying, create this file at the project root so future agents have instant context:
+
+```markdown
+# Blink Project
+
+## Project
+- **ID**: `{project_id}`
+- **Live URL**: `https://{slug}.blinkpowered.com`
+- **Publishable Key**: `{blnk_pk_...}`
+
+## Deploy
+\`\`\`bash
+npm run build && blink deploy {project_id} ./dist --prod
+\`\`\`
+
+## Database
+\`\`\`sql
+{paste CREATE TABLE statements here}
+\`\`\`
+
+## Auth
+- Mode: `managed` or `headless`
+- Providers: email, google
+
+## SDK
+\`\`\`typescript
+import { createClient } from '@blinkdotnew/sdk'
+export const blink = createClient({
+  projectId: import.meta.env.VITE_BLINK_PROJECT_ID,
+  publishableKey: import.meta.env.VITE_BLINK_PUBLISHABLE_KEY,
+  auth: { mode: 'headless' }, // or 'managed'
+})
+// DB: blink.db.table<T>('tablename').list/create/update/delete
+// Auth: blink.auth.onAuthStateChanged / login / logout / signInWithGoogle
+\`\`\`
+```
+
+Also create `CLAUDE.md` at the project root containing exactly:
+```markdown
+# Claude Context
+@AGENTS.md
+```

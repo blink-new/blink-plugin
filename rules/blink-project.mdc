@@ -6,6 +6,9 @@ globs: "**/*.{ts,tsx,js,jsx}"
 
 When building on Blink infrastructure:
 
+- After setting up a Blink project, always create `AGENTS.md` at the project root with: project ID, live URL, publishable key, deploy command, DB schema, and auth mode. Also create `CLAUDE.md` containing `# Claude Context\n@AGENTS.md`. These files persist Blink context across agent sessions so users never need to re-explain their setup.
+
+
 - Initialize the SDK with both `projectId` and `publishableKey`:
   ```typescript
   import { createClient } from '@blinkdotnew/sdk'
