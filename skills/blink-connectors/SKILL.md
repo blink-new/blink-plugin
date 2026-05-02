@@ -99,6 +99,38 @@ blink connector exec salesforce /query GET '{"q":"SELECT Id,Name FROM Account LI
 2. **Dynamic IDs go in the path** — `/channels/${channelId}/messages`
 3. **Provider IDs use underscores** — `google_drive`, `google_calendar`, `google_sheets`
 4. **GET params** become query parameters; **POST params** become JSON body
+5. **Invalid JSON in CLI params hard-fails (exit 1)** — bad JSON used to silently send `{}`. If you see `Invalid JSON for params: ...`, fix the quoting (shell-escape inner double quotes or use `--input @file.json`).
+
+## Google Ads (`composio_googleads`) — known upstream bug
+
+**Composio's server strips `false`, `0`, `{}`, `[]` from POST bodies before forwarding to Google Ads.** This breaks any call that requires explicit booleans, empty proto messages, or `0` enum values. Tracked at [ComposioHQ/composio#3324](https://github.com/ComposioHQ/composio/issues/3324). Until fixed upstream, follow these patterns:
+
+### Required workarounds
+
+1. **Always set `partialFailure: true` and `validateOnly: true` first.** This converts 400 errors into 200-OK responses with a `partialFailureError` field that ISN'T truncated by Composio's error wrapper — you'll see Google's full `fieldPathElements` and learn which fields were stripped. Switch to `validateOnly: false` only after the dry-run succeeds.
+
+2. **Use portfolio bidding strategies, not inline `{}` markers.**
+   - ❌ `{ campaign: { manualCpc: {} } }` — `{}` is stripped, Google returns `REQUIRED`.
+   - ✅ Create a portfolio first via `biddingStrategies:mutate` with `type: "TARGET_SPEND"`, then reference the resource name as a string: `{ campaign: { biddingStrategy: "customers/123/biddingStrategies/456" } }`. Strings are never stripped.
+
+3. **Place `finalUrls` at the Asset top level, NOT inside `sitelinkAsset`.** Composio's schema validation drops it from inside the sub-object. Top-level survives.
+
+4. **Include all v23 required enum fields explicitly:**
+   - `containsEuPoliticalAdvertising: 2` (NOT_EU_POLITICAL_ADVERTISING) — newly required.
+   - `networkSettings.targetGoogleSearch`, `targetSearchNetwork`, `targetContentNetwork`, `targetPartnerSearchNetwork` — set to `true` for Search campaigns. **NEVER pass `false`** — Composio strips it. If you need to exclude a network, omit the field (Google defaults to your account preferences).
+
+### Debugging recipe
+
+When a Google Ads call fails with cryptic `REQUIRED` errors:
+```bash
+# 1. Add partialFailure + validateOnly to dry-run with full errors
+blink connector exec composio_googleads /v23/customers/CUSTOMER_ID/campaigns:mutate POST \
+  '{"operations":[...],"partialFailure":true,"validateOnly":true}'
+
+# 2. Read the partialFailureError.details for fieldPathElements
+# 3. Replace any { manualCpc: {} } with portfolio bidding string references
+# 4. Re-run with validateOnly: false
+```
 
 ## Error Codes
 
