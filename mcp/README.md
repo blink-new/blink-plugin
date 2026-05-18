@@ -24,9 +24,9 @@ Blink is the serverless cloud that ships with everything. No infrastructure to c
 
 ## Install
 
-```bash
-npm install -g @blinkdotnew/mcp
-```
+No install step needed — the configs below use `npx` to fetch the latest version on demand.
+
+> **Don't `npm install -g @blinkdotnew/mcp`.** A globally-installed copy shadows the registry: `npx` will keep running the stale global instead of pulling new versions, and you'll be stuck on whatever version you first installed. Always use the `npx -y @blinkdotnew/mcp@latest` form below.
 
 ## Use with Cursor
 
@@ -37,7 +37,7 @@ Add to your Cursor settings or project `mcp.json`:
   "mcpServers": {
     "blink": {
       "command": "npx",
-      "args": ["-y", "@blinkdotnew/mcp"],
+      "args": ["-y", "@blinkdotnew/mcp@latest"],
       "env": { "BLINK_API_KEY": "your-api-key" }
     }
   }
@@ -53,7 +53,7 @@ Add to your `.mcp.json`:
   "mcpServers": {
     "blink": {
       "command": "npx",
-      "args": ["-y", "@blinkdotnew/mcp"],
+      "args": ["-y", "@blinkdotnew/mcp@latest"],
       "env": { "BLINK_API_KEY": "your-api-key" }
     }
   }

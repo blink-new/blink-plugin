@@ -36,7 +36,7 @@ Sign up at [blink.new](https://blink.new), then go to [Settings → API Keys](ht
   "mcpServers": {
     "blink": {
       "command": "npx",
-      "args": ["-y", "@blinkdotnew/mcp"],
+      "args": ["-y", "@blinkdotnew/mcp@latest"],
       "env": { "BLINK_API_KEY": "blnk_ak_..." }
     }
   }
