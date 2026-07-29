@@ -101,36 +101,76 @@ blink connector exec salesforce /query GET '{"q":"SELECT Id,Name FROM Account LI
 4. **GET params** become query parameters; **POST params** become JSON body
 5. **Invalid JSON in CLI params hard-fails (exit 1)** — bad JSON used to silently send `{}`. If you see `Invalid JSON for params: ...`, fix the quoting (shell-escape inner double quotes or use `--input @file.json`).
 
-## Google Ads (`composio_googleads`) — known upstream bug
+## Google Ads (`composio_googleads`) — reading data
 
-**Composio's server strips `false`, `0`, `{}`, `[]` from POST bodies before forwarding to Google Ads.** This breaks any call that requires explicit booleans, empty proto messages, or `0` enum values. Tracked at [ComposioHQ/composio#3324](https://github.com/ComposioHQ/composio/issues/3324). Until fixed upstream, follow these patterns:
+**Every path must start with the API version, and the customer id goes in the PATH, never in the body.** There is no top-level `/search` resource — `/search`, `/googleads/search` and `/searchStream` all 404.
 
-### Required workarounds
+```bash
+# Find the customer id
+blink connector exec composio_googleads /v23/customers:listAccessibleCustomers GET
 
-1. **Always set `partialFailure: true` and `validateOnly: true` first.** This converts 400 errors into 200-OK responses with a `partialFailureError` field that ISN'T truncated by Composio's error wrapper — you'll see Google's full `fieldPathElements` and learn which fields were stripped. Switch to `validateOnly: false` only after the dry-run succeeds.
+# Run a report (GAQL)
+blink connector exec composio_googleads /v23/customers/CUSTOMER_ID/googleAds:search POST \
+  '{"query":"SELECT campaign.name, metrics.clicks FROM campaign WHERE segments.date DURING LAST_14_DAYS"}'
+```
 
-2. **Use portfolio bidding strategies, not inline `{}` markers.**
-   - ❌ `{ campaign: { manualCpc: {} } }` — `{}` is stripped, Google returns `REQUIRED`.
-   - ✅ Create a portfolio first via `biddingStrategies:mutate` with `type: "TARGET_SPEND"`, then reference the resource name as a string: `{ campaign: { biddingStrategy: "customers/123/biddingStrategies/456" } }`. Strings are never stripped.
+`googleAds:searchStream` works the same way but returns its payload — errors included — wrapped in an array.
 
-3. **Place `finalUrls` at the Asset top level, NOT inside `sitelinkAsset`.** Composio's schema validation drops it from inside the sub-object. Top-level survives.
+### Quota (`RESOURCE_EXHAUSTED`, scope `DEVELOPER`)
 
-4. **Include all v23 required enum fields explicitly:**
-   - `containsEuPoliticalAdvertising: 2` (NOT_EU_POLITICAL_ADVERTISING) — newly required.
-   - `networkSettings.targetGoogleSearch`, `targetSearchNetwork`, `targetContentNetwork`, `targetPartnerSearchNetwork` — set to `true` for Search campaigns. **NEVER pass `false`** — Composio strips it. If you need to exclude a network, omit the field (Google defaults to your account preferences).
+A 429 with `rateScope: DEVELOPER` is a cap on Composio's **shared developer token** — pooled across tenants — not on the user's Google Ads account. Nothing the user does to their account fixes it. Honour the `retryDelay` (often 10h+) and surface it to the user rather than retrying into it.
+
+`rateScope: ACCOUNT` means the opposite: that one *is* the user's own account rate limit, and the delay is usually short.
+
+## Google Ads (`composio_googleads`) — writing campaigns
+
+> **The old falsy-stripping workarounds are retired.** Composio's proxy used to
+> drop `false`, `0`, `{}` and `[]` from POST bodies
+> ([#3324](https://github.com/ComposioHQ/composio/issues/3324)). That was fixed
+> upstream on **2026-07-24** and re-verified against the live proxy on
+> 2026-07-29. **Send falsy values normally.** Do not build portfolio bidding
+> strategies just to avoid `manualCpc: {}`, and do not omit a network setting
+> you want off — omitting it means "use account defaults", which is not the same
+> as `false`.
+
+1. **Dry-run first with `partialFailure: true` + `validateOnly: true`.** Google
+   returns 200 with a `partialFailureError` carrying the full `fieldPathElements`
+   list, so you see every bad field at once instead of one error per round trip.
+   Flip `validateOnly` to `false` only once the dry-run is clean.
+
+2. **Empty proto markers work inline.** `{ "manualCpc": {} }` satisfies
+   `campaign_bidding_strategy` — verified. Portfolio strategies are still the
+   right choice when you actually want shared bidding across campaigns, but
+   they're no longer a workaround.
+
+3. **`finalUrls` goes at the Asset top level, NOT inside `sitelinkAsset`.** This
+   one still holds, but it's plain Google schema, not a proxy quirk:
+   `SitelinkAsset` has no `finalUrls` field, so nesting it returns
+   `Invalid JSON payload ... Unknown name "finalUrls"`.
+
+4. **v23 requires `containsEuPoliticalAdvertising` on campaign create.** Use the
+   string enum: `"containsEuPoliticalAdvertising": "DOES_NOT_CONTAIN_EU_POLITICAL_ADVERTISING"`.
+   Omitting it returns `contains_eu_political_advertising: REQUIRED`.
+
+5. **`networkSettings` booleans are real booleans.** Set them `true` or `false`
+   as you mean them. Note Google rejects `targetGoogleSearch: false` on a Search
+   campaign with `OPERATION_NOT_PERMITTED_FOR_CONTEXT` — that's Google's rule,
+   not a stripped field.
 
 ### Debugging recipe
 
-When a Google Ads call fails with cryptic `REQUIRED` errors:
 ```bash
-# 1. Add partialFailure + validateOnly to dry-run with full errors
+# Dry-run and read the full error list
 blink connector exec composio_googleads /v23/customers/CUSTOMER_ID/campaigns:mutate POST \
   '{"operations":[...],"partialFailure":true,"validateOnly":true}'
 
-# 2. Read the partialFailureError.details for fieldPathElements
-# 3. Replace any { manualCpc: {} } with portfolio bidding string references
-# 4. Re-run with validateOnly: false
+# Then: read partialFailureError.details[].errors[].location.fieldPathElements
+# to see exactly which field Google rejected, fix it, re-run with validateOnly:false
 ```
+
+> Prefer `connector exec` (the proxy) over `connector tool-execute` (the native
+> tool catalog) for Google Ads. The native path collapses Google's error into an
+> opaque `Error executing the tool GOOGLEADS_*` with no field detail.
 
 ## Error Codes
 
