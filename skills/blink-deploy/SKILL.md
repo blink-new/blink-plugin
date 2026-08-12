@@ -26,7 +26,8 @@ blink deploy ./dist --prod
 # Use blink_hosting_activate MCP tool, or:
 blink hosting activate <project_id>   # if CLI has this command
 
-# Preview deploy (temporary URL, no activation needed)
+# Preview deploy — publishes to the project's own blinkusercontent.com URL (no activation
+# needed, but this IS the project's default live site, not a throwaway — see below)
 blink deploy <project_id> ./dist
 
 # List saved version snapshots
@@ -62,25 +63,30 @@ blink_hosting_activate  # only for sandbox-based projects
 |----------|---------|-----|
 | App built externally (Vite/Next/React) | `blink deploy <id> ./dist --prod` | `{slug}.blinkpowered.com` |
 | App built in Blink AI editor | `blink_hosting_activate` | `{slug}.blinkpowered.com` |
-| Preview / test URL | `blink deploy <id> ./dist` (no --prod) | `{id}.blinkusercontent.com` |
+| Preview / default URL | `blink deploy <id> ./dist` (no --prod) | `{projectId}.blinkusercontent.com` |
 
 ## Deploy Pipeline
 
 ```
 1. npm run build          → generates ./dist (or .next, out/, build/)
 2. blink deploy ./dist    → uploads to Blink hosting
-3. URL printed            → {projectId}.blinkusercontent.com (preview) or {slug}.blinkpowered.com --prod (or custom domain)
+3. URL printed            → {projectId}.blinkusercontent.com (preview), or {slug}.blinkpowered.com with --prod (or custom domain)
 ```
 
 ## Preview vs Production
 
+**Neither flag is a safe/isolated sandbox — both overwrite a real, live URL.** A preview deploy
+publishes to the SAME `blinkusercontent.com` URL the Blink AI editor's own publish path writes to
+(and the UI shows as the project's default domain) — running `blink deploy ./dist` without
+`--prod` replaces whatever is live there right now.
+
 | Flag | Behavior | URL |
 |------|----------|-----|
-| (none) | Preview deploy | `{projectId}.blinkusercontent.com` |
-| `--prod` | Production deploy | `{slug}.blinkpowered.com` + custom domains |
+| (none) | Publishes to the project's default URL — no activation, but not throwaway either | `{projectId}.blinkusercontent.com` |
+| `--prod` | Also publishes to the production/custom-domain URL | `{slug}.blinkpowered.com` + custom domains |
 
 ```bash
-# Preview — test before going live
+# Publishes to the project's blinkusercontent.com URL — this replaces what's live there now
 blink deploy ./dist
 # → https://{projectId}.blinkusercontent.com
 
