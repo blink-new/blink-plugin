@@ -22,9 +22,10 @@ blink deploy <project_id> ./dist --prod
 blink link <project_id>
 blink deploy ./dist --prod
 
-# That's it — no activation step. Do NOT call blink_hosting_activate after this (see
-# "Two hosting systems" below): it rebuilds from the Blink sandbox and overwrites what
-# you just deployed.
+# That's it — no activation step. Do NOT run `blink hosting activate` or call the
+# blink_hosting_activate MCP tool after this (see "Two hosting systems" below) — both
+# spellings hit the same endpoint, which rebuilds from the Blink sandbox and overwrites
+# what you just deployed.
 
 # Preview deploy — publishes to the project's own blinkusercontent.com URL (no activation
 # needed, but this IS the project's default live site, not a throwaway — see below)
@@ -39,7 +40,8 @@ blink versions restore <version_id>
 
 ## Two hosting systems — do NOT mix them
 
-Blink has two separate hosting paths. **Never call `blink_hosting_activate` after `blink deploy`.**
+Blink has two separate hosting paths. **Never run `blink hosting activate` or call the
+`blink_hosting_activate` MCP tool after `blink deploy` — both spellings hit the same endpoint.**
 
 ### Path A — CLI deploy (for externally-built apps)
 ```bash
@@ -47,7 +49,11 @@ blink deploy <project_id> ./dist --prod
 # → live immediately at https://{project_slug}.blinkpowered.com
 # → NO further steps needed. DO NOT call blink_hosting_activate.
 ```
-The URL is printed by the CLI after deploy. `blink_hosting_status` may still show `inactive` — this is a display lag, the site IS live.
+The URL is printed by the CLI after deploy. `blink_hosting_status` will keep showing `inactive`
+permanently for a CLI-deployed project — the deploy route never writes that field, so this isn't a
+transient lag to wait out. The real cause is the project's billing lifecycle, not deploy state; the
+site is live regardless. **Do not "fix" an `inactive` status by running hosting activation** — see
+above.
 
 ### Path B — Blink sandbox activation (for projects built in the Blink AI editor)
 ```bash
@@ -140,4 +146,4 @@ blink domains add myapp.com
 | Empty deploy | Check build output directory exists and has files |
 | 404 after deploy | Verify correct output dir (`dist/`, `out/`, `build/`) |
 | Env vars missing | Set secrets in project settings before build |
-| Stale deploy | Ensure `--prod` flag for production updates |
+| Stale deploy | Ensure `--prod` flag for production updates. If it's specifically the default `blinkusercontent.com` URL that's stale after a `--prod` deploy, that's expected — `--prod` doesn't touch it (see Preview vs Production); run a plain `blink deploy` (no flag) to update it too |
