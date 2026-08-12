@@ -5,7 +5,7 @@ description: Build and deploy Blink apps to production. Preview vs production de
 
 ## MCP Tools
 
-`blink_rollback` — Restore a project to a previously saved version snapshot (use `blink_versions_list` to find version IDs).
+`blink_versions_restore` — Restore a project to a previously saved version snapshot (use `blink_versions_list` to find version IDs).
 
 **Frontend deployment is done via CLI** — `blink deploy ./dist --prod`. The MCP has no deploy tool because agents deploy using the CLI after building.
 
@@ -47,7 +47,7 @@ Blink has two separate hosting paths. **Never run `blink hosting activate` or ca
 ```bash
 blink deploy <project_id> ./dist --prod
 # → live immediately at https://{project_slug}.blinkpowered.com
-# → NO further steps needed. DO NOT call blink_hosting_activate.
+# → NO further steps needed. Do NOT run `blink hosting activate` or call blink_hosting_activate.
 ```
 The URL is printed by the CLI after deploy. `blink_hosting_status` will keep showing `inactive`
 permanently for a CLI-deployed project — the deploy route never writes that field, so this isn't a
