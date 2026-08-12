@@ -22,9 +22,9 @@ blink deploy <project_id> ./dist --prod
 blink link <project_id>
 blink deploy ./dist --prod
 
-# After deploying, activate hosting (required to get a live URL)
-# Use blink_hosting_activate MCP tool, or:
-blink hosting activate <project_id>   # if CLI has this command
+# That's it — no activation step. Do NOT call blink_hosting_activate after this (see
+# "Two hosting systems" below): it rebuilds from the Blink sandbox and overwrites what
+# you just deployed.
 
 # Preview deploy — publishes to the project's own blinkusercontent.com URL (no activation
 # needed, but this IS the project's default live site, not a throwaway — see below)
@@ -83,7 +83,7 @@ publishes to the SAME `blinkusercontent.com` URL the Blink AI editor's own publi
 | Flag | Behavior | URL |
 |------|----------|-----|
 | (none) | Publishes to the project's default URL — no activation, but not throwaway either | `{projectId}.blinkusercontent.com` |
-| `--prod` | Also publishes to the production/custom-domain URL | `{slug}.blinkpowered.com` + custom domains |
+| `--prod` | Publishes ONLY to the production/custom-domain URL — does NOT also update the default URL above, which stays on whatever was last deployed there | `{slug}.blinkpowered.com` + custom domains |
 
 ```bash
 # Publishes to the project's blinkusercontent.com URL — this replaces what's live there now
