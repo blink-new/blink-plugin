@@ -62,31 +62,31 @@ blink_hosting_activate  # only for sandbox-based projects
 |----------|---------|-----|
 | App built externally (Vite/Next/React) | `blink deploy <id> ./dist --prod` | `{slug}.blinkpowered.com` |
 | App built in Blink AI editor | `blink_hosting_activate` | `{slug}.blinkpowered.com` |
-| Preview / test URL | `blink deploy <id> ./dist` (no --prod) | `{id}.sites.blink.new` |
+| Preview / test URL | `blink deploy <id> ./dist` (no --prod) | `{id}.blinkusercontent.com` |
 
 ## Deploy Pipeline
 
 ```
 1. npm run build          → generates ./dist (or .next, out/, build/)
 2. blink deploy ./dist    → uploads to Blink hosting
-3. URL printed            → {projectId}.sites.blink.new (or custom domain)
+3. URL printed            → {projectId}.blinkusercontent.com (preview) or {slug}.blinkpowered.com --prod (or custom domain)
 ```
 
 ## Preview vs Production
 
 | Flag | Behavior | URL |
 |------|----------|-----|
-| (none) | Preview deploy | Temporary preview URL |
-| `--prod` | Production deploy | `{projectId}.sites.blink.new` + custom domains |
+| (none) | Preview deploy | `{projectId}.blinkusercontent.com` |
+| `--prod` | Production deploy | `{slug}.blinkpowered.com` + custom domains |
 
 ```bash
 # Preview — test before going live
 blink deploy ./dist
-# → https://preview-abc123.sites.blink.new
+# → https://{projectId}.blinkusercontent.com
 
 # Production — replaces live site
 blink deploy ./dist --prod
-# → https://{projectId}.sites.blink.new
+# → https://{slug}.blinkpowered.com
 ```
 
 ## Framework Build Outputs
