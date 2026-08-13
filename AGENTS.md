@@ -61,7 +61,7 @@ Auth: OIDC Trusted Publisher. Configured on npmjs.com for `blink-new/blink-plugi
 | Agents        | `blink_agent_list`, `_status`, `_secrets_list`, `_secrets_set`, `_secrets_delete`                                                         |
 | Phone         | `blink_phone_list`, `_buy`, `_release`                                                                                                    |
 | Functions     | `blink_functions_list`, `_get`, `_delete`, `_logs`                                                                                        |
-| Versions      | `blink_versions_list`, `_save`, `_restore`, `blink_rollback`                                                                              |
+| Versions      | `blink_versions_list`, `_save`, `_restore`                                                                                                |
 
 ## Skills (15)
 

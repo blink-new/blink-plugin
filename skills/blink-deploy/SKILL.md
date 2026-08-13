@@ -5,7 +5,7 @@ description: Build and deploy Blink apps to production. Preview vs production de
 
 ## MCP Tools
 
-`blink_rollback` — Restore a project to a previously saved version snapshot (use `blink_versions_list` to find version IDs).
+`blink_versions_restore` — Restore a project to a previously saved version snapshot (use `blink_versions_list` to find version IDs).
 
 **Frontend deployment is done via CLI** — `blink deploy ./dist --prod`. The MCP has no deploy tool because agents deploy using the CLI after building.
 
@@ -22,11 +22,13 @@ blink deploy <project_id> ./dist --prod
 blink link <project_id>
 blink deploy ./dist --prod
 
-# After deploying, activate hosting (required to get a live URL)
-# Use blink_hosting_activate MCP tool, or:
-blink hosting activate <project_id>   # if CLI has this command
+# That's it — no activation step. Do NOT run `blink hosting activate` or call the
+# blink_hosting_activate MCP tool after this (see "Two hosting systems" below) — both
+# spellings hit the same endpoint, which rebuilds from the Blink sandbox and overwrites
+# what you just deployed.
 
-# Preview deploy (temporary URL, no activation needed)
+# Preview deploy — publishes to the project's own blinkusercontent.com URL (no activation
+# needed, but this IS the project's default live site, not a throwaway — see below)
 blink deploy <project_id> ./dist
 
 # List saved version snapshots
@@ -38,15 +40,20 @@ blink versions restore <version_id>
 
 ## Two hosting systems — do NOT mix them
 
-Blink has two separate hosting paths. **Never call `blink_hosting_activate` after `blink deploy`.**
+Blink has two separate hosting paths. **Never run `blink hosting activate` or call the
+`blink_hosting_activate` MCP tool after `blink deploy` — both spellings hit the same endpoint.**
 
 ### Path A — CLI deploy (for externally-built apps)
 ```bash
 blink deploy <project_id> ./dist --prod
 # → live immediately at https://{project_slug}.blinkpowered.com
-# → NO further steps needed. DO NOT call blink_hosting_activate.
+# → NO further steps needed. Do NOT run `blink hosting activate` or call blink_hosting_activate.
 ```
-The URL is printed by the CLI after deploy. `blink_hosting_status` may still show `inactive` — this is a display lag, the site IS live.
+The URL is printed by the CLI after deploy. `blink_hosting_status` will keep showing `inactive`
+permanently for a CLI-deployed project — the deploy route never writes that field, so this isn't a
+transient lag to wait out. The real cause is the project's billing lifecycle, not deploy state; the
+site is live regardless. **Do not "fix" an `inactive` status by running hosting activation** — see
+above.
 
 ### Path B — Blink sandbox activation (for projects built in the Blink AI editor)
 ```bash
@@ -62,31 +69,36 @@ blink_hosting_activate  # only for sandbox-based projects
 |----------|---------|-----|
 | App built externally (Vite/Next/React) | `blink deploy <id> ./dist --prod` | `{slug}.blinkpowered.com` |
 | App built in Blink AI editor | `blink_hosting_activate` | `{slug}.blinkpowered.com` |
-| Preview / test URL | `blink deploy <id> ./dist` (no --prod) | `{id}.sites.blink.new` |
+| Preview / default URL | `blink deploy <id> ./dist` (no --prod) | `{projectId}.blinkusercontent.com` |
 
 ## Deploy Pipeline
 
 ```
 1. npm run build          → generates ./dist (or .next, out/, build/)
 2. blink deploy ./dist    → uploads to Blink hosting
-3. URL printed            → {projectId}.sites.blink.new (or custom domain)
+3. URL printed            → {projectId}.blinkusercontent.com (preview), or {slug}.blinkpowered.com with --prod (or custom domain)
 ```
 
 ## Preview vs Production
 
+**Neither flag is a safe/isolated sandbox — both overwrite a real, live URL.** A preview deploy
+publishes to the SAME `blinkusercontent.com` URL the Blink AI editor's own publish path writes to
+(and the UI shows as the project's default domain) — running `blink deploy ./dist` without
+`--prod` replaces whatever is live there right now.
+
 | Flag | Behavior | URL |
 |------|----------|-----|
-| (none) | Preview deploy | Temporary preview URL |
-| `--prod` | Production deploy | `{projectId}.sites.blink.new` + custom domains |
+| (none) | Publishes to the project's default URL — no activation, but not throwaway either | `{projectId}.blinkusercontent.com` |
+| `--prod` | Publishes ONLY to the production/custom-domain URL — does NOT also update the default URL above, which stays on whatever was last deployed there | `{slug}.blinkpowered.com` + custom domains |
 
 ```bash
-# Preview — test before going live
+# Publishes to the project's blinkusercontent.com URL — this replaces what's live there now
 blink deploy ./dist
-# → https://preview-abc123.sites.blink.new
+# → https://{projectId}.blinkusercontent.com
 
 # Production — replaces live site
 blink deploy ./dist --prod
-# → https://{projectId}.sites.blink.new
+# → https://{slug}.blinkpowered.com
 ```
 
 ## Framework Build Outputs
@@ -134,4 +146,4 @@ blink domains add myapp.com
 | Empty deploy | Check build output directory exists and has files |
 | 404 after deploy | Verify correct output dir (`dist/`, `out/`, `build/`) |
 | Env vars missing | Set secrets in project settings before build |
-| Stale deploy | Ensure `--prod` flag for production updates |
+| Stale deploy | Ensure `--prod` flag for production updates. If it's specifically the default `blinkusercontent.com` URL that's stale after a `--prod` deploy, that's expected — `--prod` doesn't touch it (see Preview vs Production); run a plain `blink deploy` (no flag) to update it too |
