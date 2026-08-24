@@ -26,7 +26,7 @@ blink queue list --status pending
 blink queue stats
 ```
 
-**Min SDK: `@blinkdotnew/sdk >= 2.5.0`**
+**Min SDK: `@blinkdotnew/sdk >= 2.9.0`**
 
 ## Critical Rules
 
@@ -48,6 +48,7 @@ app.post('/api/queue', async (c) => {
     signature: c.req.header('upstash-signature') ?? '',
     body,
     signingKey: c.env.BLINK_QUEUE_SIGNING_KEY,
+    nextSigningKey: c.env.BLINK_QUEUE_SIGNING_KEY_NEXT,  // set during key rotation
   })
   if (!ok) return c.json({ error: 'invalid signature' }, 401)
 
