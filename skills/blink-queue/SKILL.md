@@ -39,7 +39,10 @@ blink queue stats
 ## Step 1 — Add Handler to `backend/index.ts`
 
 ```typescript
+import { createClient } from '@blinkdotnew/sdk'
+
 app.post('/api/queue', async (c) => {
+  const blink = createClient({ projectId: c.env.BLINK_PROJECT_ID, secretKey: c.env.BLINK_SECRET_KEY })
   // Your queue URL is public. Verify every delivery came from Blink Queue before
   // acting on it — one check covers both enqueued tasks and cron ticks. Read the
   // RAW body: the signature is over the exact bytes, so parse only after verifying.
@@ -48,7 +51,7 @@ app.post('/api/queue', async (c) => {
     signature: c.req.header('upstash-signature') ?? '',
     body,
     signingKey: c.env.BLINK_QUEUE_SIGNING_KEY,
-    nextSigningKey: c.env.BLINK_QUEUE_SIGNING_KEY_NEXT,  // set during key rotation
+    nextSigningKey: c.env.BLINK_QUEUE_SIGNING_KEY_NEXT,  // platform-injected; used during key rotation
   })
   if (!ok) return c.json({ error: 'invalid signature' }, 401)
 
