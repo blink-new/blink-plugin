@@ -40,7 +40,18 @@ blink queue stats
 
 ```typescript
 app.post('/api/queue', async (c) => {
-  const { taskName, payload } = await c.req.json()
+  // Your queue URL is public. Verify every delivery came from Blink Queue before
+  // acting on it — one check covers both enqueued tasks and cron ticks. Read the
+  // RAW body: the signature is over the exact bytes, so parse only after verifying.
+  const body = await c.req.text()
+  const ok = await blink.queue.verify({
+    signature: c.req.header('upstash-signature') ?? '',
+    body,
+    signingKey: c.env.BLINK_QUEUE_SIGNING_KEY,
+  })
+  if (!ok) return c.json({ error: 'invalid signature' }, 401)
+
+  const { taskName, payload } = JSON.parse(body)
 
   switch (taskName) {
     case 'send-welcome-email':
@@ -56,6 +67,9 @@ app.post('/api/queue', async (c) => {
   }
 })
 ```
+
+`BLINK_QUEUE_SIGNING_KEY` is injected into your backend env automatically — you do
+not set it. `verify()` returns `true`/`false` and throws only if the key is missing.
 
 **Payload by source:**
 
