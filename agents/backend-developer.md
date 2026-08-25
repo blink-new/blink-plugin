@@ -26,11 +26,22 @@ Blink backend is a **Hono server** deployed to Cloudflare Workers for Platforms:
 ```typescript
 // backend/index.ts
 import { Hono } from 'hono'
+import { createClient } from '@blinkdotnew/sdk'
 const app = new Hono()
 
 app.get('/api/health', (c) => c.json({ ok: true }))
 app.post('/api/queue', async (c) => {
-  const { taskName, payload } = await c.req.json()
+  const blink = createClient({ projectId: c.env.BLINK_PROJECT_ID, secretKey: c.env.BLINK_SECRET_KEY })
+  // Verify the delivery before trusting it — the URL is public.
+  const body = await c.req.text()
+  const ok = await blink.queue.verify({
+    signature: c.req.header('upstash-signature') ?? '',
+    body,
+    signingKey: c.env.BLINK_QUEUE_SIGNING_KEY,
+    nextSigningKey: c.env.BLINK_QUEUE_SIGNING_KEY_NEXT,  // platform-injected; used during key rotation
+  })
+  if (!ok) return c.json({ error: 'invalid signature' }, 401)
+  const { taskName, payload } = JSON.parse(body)
   // Handle queue-delivered tasks here
   return c.json({ received: true })
 })
