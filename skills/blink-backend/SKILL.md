@@ -71,7 +71,7 @@ export default app
 
 ## Secrets
 
-**Auto-injected** (never hardcode): `BLINK_PROJECT_ID`, `BLINK_SECRET_KEY`, `BLINK_PUBLISHABLE_KEY`
+**Auto-injected** (never hardcode): `BLINK_PROJECT_ID`, `BLINK_SECRET_KEY`. A backend gets no publishable key: call Blink with `BLINK_SECRET_KEY` or the caller's token.
 
 **User secrets** (third-party keys): Add via project settings or CLI, access as `c.env.MY_SECRET`.
 
