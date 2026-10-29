@@ -104,9 +104,13 @@ await blink.auth.signUp({
 await blink.auth.sendPasswordResetEmail(email)
 await blink.auth.confirmPasswordReset(token, newPassword)
 
-// Custom flow: generate token, send your own email
-const { token, resetUrl } = await blink.auth.generatePasswordResetToken(email)
+// Custom email: SERVER-ONLY (backend / edge function), never browser code.
+// Returns a live reset token, so it needs the secret key; without it the call fails (403).
+const serverBlink = createClient({ projectId: env.BLINK_PROJECT_ID, secretKey: env.BLINK_SECRET_KEY })
+const { token, resetUrl } = await serverBlink.auth.generatePasswordResetToken(email)
 ```
+
+`generateMagicLinkToken()` has the same rule. From browser code, use `sendPasswordResetEmail()` / `sendMagicLink()`.
 
 ## Magic Links
 
