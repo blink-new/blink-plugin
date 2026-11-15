@@ -30,7 +30,11 @@ blink connector exec slack /conversations GET
 
 ## SDK Usage
 
+Server code only (Blink Backend or your own server) with the project secret key. Browser and mobile calls are refused with 403 `CONNECTOR_SERVER_KEY_REQUIRED`, because every call acts as the project owner's connected account. The frontend calls your backend route, which checks the app user and then calls the connector.
+
 ```typescript
+const blink = createClient({ projectId: env.BLINK_PROJECT_ID, secretKey: env.BLINK_SECRET_KEY })
+
 // Check status
 const status = await blink.connectors.status('slack')
 
