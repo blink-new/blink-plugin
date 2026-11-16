@@ -69,7 +69,7 @@ Auth: OIDC Trusted Publisher. Configured on npmjs.com for `blink-new/blink-plugi
 | ------------------ | ------------------------------------------------------------ |
 | `blink-full-stack` | End-to-end: create → auth → DB → backend → deploy → domain  |
 | `blink-database`   | SQL CRUD, schema, migrations, SDK methods                    |
-| `blink-auth`       | Managed + headless modes, providers, BYOC                    |
+| `blink-auth`       | Managed + headless modes, providers, BYOC, email sign-up settings, security policy |
 | `blink-backend`    | Hono server, CF Workers, env vars, deployment                |
 | `blink-storage`    | Upload/download, CDN URLs, SDK methods                       |
 | `blink-queue`      | Background tasks, cron, DLQ, named queues                    |

@@ -1,6 +1,6 @@
 ---
 name: blink-auth
-description: Authentication with managed and headless modes. Social providers, email/password, magic links, RBAC.
+description: Authentication with managed and headless modes. Social providers, email/password, email verification and sign-up settings, magic links, RBAC, and the security policy that decides which modules (db, ai, storage, realtime, rag) need a signed-in user.
 ---
 
 **Important**: Enable providers via CLI or MCP before using them in your app: `blink auth-config set --provider google --enabled true`
@@ -16,6 +16,33 @@ description: Authentication with managed and headless modes. Social providers, e
 blink auth-config set --provider google --enabled true
 blink auth-config set --provider github --enabled true
 blink auth-config set --provider email --enabled true
+```
+
+## Email verification and open sign-up
+
+`blink auth-config set` changes providers and mode only. Email settings live in the same config: read it, edit it, write the whole object back.
+
+```bash
+APP=${BLINK_APP_URL:-https://blink.new}; P=<project_id>; H="Authorization: Bearer $BLINK_API_KEY"
+curl -s "$APP/api/projects/$P/auth" -H "$H"
+# → {"auth":{"providers":{"email":true,"google":true,...},"email":{"require_verification":true,"allow_signup":true}}}
+# PUT the "auth" object back with your edits (e.g. "require_verification": false):
+curl -s -X PUT "$APP/api/projects/$P/auth" -H "$H" -H 'Content-Type: application/json' -d '<the edited auth object>'
+```
+
+## Which modules need a signed-in user (security policy)
+
+Each module (`db`, `ai`, `storage`, `realtime`, `rag`) has `require_auth`; modules not listed follow `defaults.require_auth`. Read it with `blink security get --json`.
+
+CLI 0.10.0+ changes one module in one command and keeps the rest of the policy: `blink security set --module ai --require-auth true` (check `blink --version`; upgrade with `npm install -g @blinkdotnew/cli@latest`). It refuses to make ai, agent, rag, queue, sandbox or data public, since every anonymous call bills the user's credits: ask the user to do that in the Blink app.
+
+Without the CLI (or on CLI 0.9.x), read the policy, edit that module, and PUT the **whole** policy back, `version` and the other modules included. With CLI 0.9.x, `blink security set` sends only the one module and fails with `version must be 1` (`POLICY_INVALID`), so don't retry it.
+
+```bash
+APP=${BLINK_APP_URL:-https://blink.new}; P=<project_id>; H="Authorization: Bearer $BLINK_API_KEY"
+curl -s "$APP/api/project/$P/security" -H "$H" \
+  | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const {policy}=JSON.parse(s);policy.modules.ai={...policy.modules.ai,require_auth:true};console.log(JSON.stringify({policy}))})' \
+  | curl -s -X PUT "$APP/api/project/$P/security" -H "$H" -H 'Content-Type: application/json' --data-binary @-
 ```
 
 ## Two Auth Modes
