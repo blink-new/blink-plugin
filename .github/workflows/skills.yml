@@ -54,6 +54,10 @@ jobs:
           git add skills/
           if git diff --cached --quiet; then
             echo "Generated blocks already match blink.new."
+            # An older sync PR would put stale blocks back if merged now.
+            for n in $(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number'); do
+              gh pr close "$n" --delete-branch --comment "blink.new and main already match; closing."
+            done
             exit 0
           fi
           git checkout -b "$BRANCH"
@@ -63,6 +67,6 @@ jobs:
             echo "Updated the open PR on $BRANCH."
           else
             gh pr create --base main --head "$BRANCH" --title "chore(skills): sync generated blocks from blink.new" \
-              --body "Automated: node scripts/sync-skill-blocks.mjs copied the generated Troubleshooting / skill-index blocks from https://blink.new/.well-known/agent-skills." \
+              --body "Automated: node scripts/sync-skill-blocks.mjs copied the generated Troubleshooting / skill-index blocks from https://blink.new/.well-known/agent-skills. A PR opened by GITHUB_TOKEN gets no check run; close and reopen it to run one." \
               || { echo "::error::$BRANCH is pushed but no PR was opened. Turn on Settings > Actions > 'Allow GitHub Actions to create and approve pull requests', or open it by hand."; exit 1; }
           fi

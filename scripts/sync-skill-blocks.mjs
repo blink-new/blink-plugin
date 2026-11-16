@@ -9,40 +9,67 @@
  */
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
+import { fileURLToPath } from 'url'
 
-const SKILLS_DIR = new URL('../skills/', import.meta.url).pathname
+const SKILLS_DIR = fileURLToPath(new URL('../skills/', import.meta.url))
 const LIVE = 'https://blink.new/.well-known/agent-skills'
-const BLOCK = /<!-- BEGIN GENERATED: ([\w-]+) [^\n]*-->\n[\s\S]*?<!-- END GENERATED: \1 -->/g
+const BLOCK = /<!-- BEGIN GENERATED: ([\w-]+) [^\r\n]*-->\r?\n[\s\S]*?<!-- END GENERATED: \1 -->/g
 
-const args = process.argv.slice(2)
-const check = args.includes('--check')
-const fromDir = args.includes('--from') ? args[args.indexOf('--from') + 1] : null
-
-async function sourceOf(name) {
-  if (fromDir) {
-    const file = join(fromDir, name, 'SKILL.md')
-    return existsSync(file) ? readFileSync(file, 'utf-8') : null
-  }
-  const res = await fetch(`${LIVE}/${name}/SKILL.md`)
-  if (res.status === 404) return null
-  if (!res.ok) throw new Error(`${LIVE}/${name}/SKILL.md: HTTP ${res.status}`)
-  return res.text()
+function parseArgs(argv) {
+  const known = new Set(['--check', '--from'])
+  const unknown = argv.filter((a, i) => a.startsWith('--') && !known.has(a) && argv[i - 1] !== '--from')
+  if (unknown.length) fail(`Unknown option(s): ${unknown.join(' ')}`)
+  if (!argv.includes('--from')) return { check: argv.includes('--check'), fromDir: null }
+  const fromDir = argv[argv.indexOf('--from') + 1]
+  if (!fromDir || fromDir.startsWith('--')) fail('--from needs a directory')
+  if (!existsSync(fromDir)) fail(`--from ${fromDir}: no such directory`)
+  return { check: argv.includes('--check'), fromDir }
 }
+
+function fail(message) {
+  console.error(message)
+  process.exit(2)
+}
+
+async function fetchLive(name, attempt = 1) {
+  const res = await fetch(`${LIVE}/${name}/SKILL.md`, { signal: AbortSignal.timeout(15_000) }).catch(e => e)
+  if (res instanceof Response && (res.ok || res.status === 404)) return res.status === 404 ? null : res.text()
+  if (attempt < 3) return fetchLive(name, attempt + 1)
+  throw new Error(`${LIVE}/${name}/SKILL.md: ${res instanceof Response ? `HTTP ${res.status}` : res.message}`)
+}
+
+function sourceOf(name, fromDir) {
+  if (!fromDir) return fetchLive(name)
+  const file = join(fromDir, name, 'SKILL.md')
+  return existsSync(file) ? readFileSync(file, 'utf-8') : null
+}
+
+const blocksOf = markdown => new Map([...markdown.matchAll(BLOCK)].map(m => [m[1], m]))
 
 /** Same rule as auto-engineer's writeBlock: replace between the markers, or append at the end. */
 function writeBlock(markdown, name, block) {
-  const existing = [...markdown.matchAll(BLOCK)].find(m => m[1] === name)
+  const existing = blocksOf(markdown).get(name)
   if (!existing) return `${markdown.trimEnd()}\n\n${block}\n`
   return markdown.slice(0, existing.index) + block + markdown.slice(existing.index + existing[0].length)
 }
 
-function withSourceBlocks(markdown, source) {
-  return [...source.matchAll(BLOCK)].reduce((md, m) => writeBlock(md, m[1], m[0]), markdown)
+/** A block blink.new no longer renders goes too, with the blank lines before it. */
+function removeBlock(markdown, name) {
+  const existing = blocksOf(markdown).get(name)
+  const before = markdown.slice(0, existing.index).replace(/\n+$/, '\n')
+  return before + markdown.slice(existing.index + existing[0].length).replace(/^\n/, '')
 }
 
-async function syncSkill(name) {
+function withSourceBlocks(markdown, source) {
+  const wanted = blocksOf(source)
+  const stale = [...blocksOf(markdown).keys()].filter(name => !wanted.has(name))
+  const pruned = stale.reduce(removeBlock, markdown)
+  return [...wanted.values()].reduce((md, m) => writeBlock(md, m[1], m[0]), pruned)
+}
+
+async function syncSkill(name, { check, fromDir }) {
   const file = join(SKILLS_DIR, name, 'SKILL.md')
-  const source = await sourceOf(name)
+  const source = await sourceOf(name, fromDir)
   if (source === null) return { name, status: 'not served yet' }
   const current = readFileSync(file, 'utf-8')
   const next = withSourceBlocks(current, source)
@@ -51,11 +78,15 @@ async function syncSkill(name) {
   return { name, status: check ? 'DRIFTED' : 'updated' }
 }
 
-const names = readdirSync(SKILLS_DIR).filter(n => existsSync(join(SKILLS_DIR, n, 'SKILL.md')))
-const results = await Promise.all(names.map(syncSkill))
-for (const r of results) console.log(`${r.status.padEnd(14)} ${r.name}`)
-const drifted = results.filter(r => r.status === 'DRIFTED')
-if (drifted.length) {
+function report(results, { fromDir }) {
+  for (const r of results) console.log(`${r.status.padEnd(14)} ${r.name}`)
+  if (results.every(r => r.status === 'not served yet')) fail(`${fromDir ?? LIVE} serves none of these skills — wrong source?`)
+  const drifted = results.filter(r => r.status === 'DRIFTED')
+  if (!drifted.length) return
   console.error(`\n${drifted.length} skill(s) differ from ${fromDir ?? LIVE}. Run: node scripts/sync-skill-blocks.mjs`)
   process.exit(1)
 }
+
+const opts = parseArgs(process.argv.slice(2))
+const names = readdirSync(SKILLS_DIR).filter(n => existsSync(join(SKILLS_DIR, n, 'SKILL.md')))
+report(await Promise.all(names.map(n => syncSkill(n, opts))), opts)

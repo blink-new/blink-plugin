@@ -87,7 +87,7 @@ Auth: OIDC Trusted Publisher. Configured on npmjs.com for `blink-new/blink-plugi
 
 ### Generated blocks — never edit by hand
 
-Text between `<!-- BEGIN GENERATED: … -->` and `<!-- END GENERATED: … -->` (each skill's Troubleshooting, the `blink` skill's index) is rendered by auto-engineer from its error registries and served at `https://blink.new/.well-known/agent-skills/<name>/SKILL.md`. `node scripts/sync-skill-blocks.mjs` copies those blocks here; the `Skills` workflow fails a PR when they differ (`--check`) and opens a sync PR daily. Edit everything outside the markers here — auto-engineer copies this repo's skills to blink.new (`sync-agent-skills.yml`) and re-renders the blocks.
+Text between `<!-- BEGIN GENERATED: … -->` and `<!-- END GENERATED: … -->` (each skill's Troubleshooting, the `blink` skill's index) is rendered by auto-engineer from its error registries and served at `https://blink.new/.well-known/agent-skills/<name>/SKILL.md`. `node scripts/sync-skill-blocks.mjs` copies those blocks here; the `Skills` workflow fails a PR when they differ (`--check`) and opens a sync PR daily. So after auto-engineer changes an error registry or a skill description, `check` is red on main and on `skills/` PRs until that sync PR merges (run the workflow by hand to get it sooner; close and reopen the bot PR to run its own check). Edit everything outside the markers here — auto-engineer copies this repo's skills to blink.new (`sync-agent-skills.yml`) and re-renders the blocks.
 
 `node scripts/lint-skills.mjs` checks each SKILL.md against the Agent Skills spec (name = folder, description ≤1024 chars, <500 lines).
 
