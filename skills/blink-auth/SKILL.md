@@ -22,6 +22,8 @@ blink auth-config set --provider email --enabled true
 
 `blink auth-config set` changes providers and mode only. Email settings live in the same config: read it, edit it, write the whole object back.
 
+The curl recipes below need `BLINK_API_KEY` set to your workspace key (`blnk_ak_...`); `blink login` alone keeps it in the CLI's config, not the environment.
+
 ```bash
 APP=${BLINK_APP_URL:-https://blink.new}; P=<project_id>; H="Authorization: Bearer $BLINK_API_KEY"  # workspace key, blnk_ak_...
 curl -s "$APP/api/projects/$P/auth" -H "$H"
@@ -35,7 +37,7 @@ Set `email.require_verification`, `email.allow_signup` and each provider you car
 
 ## Which modules need a signed-in user (security policy)
 
-Each module (`db`, `ai`, `storage`, `realtime`, `rag`, `agent`, `queue`, …) has `require_auth`; a module with no rule of its own follows `defaults.require_auth`. Read it with `blink security get --json`.
+Each module (`db`, `ai`, `storage`, `realtime`, `rag`, `agent`, `queue`, …) has `require_auth`; a module with no rule of its own follows `defaults.require_auth`, except `db` (a missing db rule is enforced as sign-in required, whatever `get` shows) and `analytics` (public). Read it with `blink security get --json`.
 
 Change one module with one call; every other module and table rule keeps its stored value:
 
