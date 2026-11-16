@@ -117,3 +117,9 @@ blink domains verify <domain_id>
 | CNAME conflict | Remove existing A/AAAA records for the same name |
 | Apex CNAME not supported | Use A record or enable www redirect |
 | Domain not resolving | Verify records with `dig myapp.com` |
+
+<!-- BEGIN GENERATED: troubleshooting (bun scripts/agent-docs/sync-skill-docs.ts; do not edit by hand) -->
+## Troubleshooting
+
+Blink Cloud error bodies carry `code`, `hint`, `docs`, `retryable` and `request_id` beside the `error` text. Do what `hint` says first; fetch `docs` (markdown) for the full fix. Every code: https://blink.new/docs/errors.md
+<!-- END GENERATED: troubleshooting -->

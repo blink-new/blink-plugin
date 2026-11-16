@@ -164,3 +164,9 @@ blink domains verify myapp.com
 **Frontend**: React (Vite), Next.js (static export), Vue, Svelte, Astro, Expo React Native, plain HTML/CSS/JS
 
 **Backend**: TypeScript/JavaScript only (Hono on CF Workers)
+
+<!-- BEGIN GENERATED: troubleshooting (bun scripts/agent-docs/sync-skill-docs.ts; do not edit by hand) -->
+## Troubleshooting
+
+Blink Cloud error bodies carry `code`, `hint`, `docs`, `retryable` and `request_id` beside the `error` text. Do what `hint` says first; fetch `docs` (markdown) for the full fix. Every code: https://blink.new/docs/errors.md
+<!-- END GENERATED: troubleshooting -->

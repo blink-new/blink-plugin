@@ -110,3 +110,9 @@ blink phone buy
 2. **Use `replyTo`** instead of custom `from` address
 3. **Validate email format** before sending
 4. **Phone numbers use E.164 format** — `+1` prefix for US numbers
+
+<!-- BEGIN GENERATED: troubleshooting (bun scripts/agent-docs/sync-skill-docs.ts; do not edit by hand) -->
+## Troubleshooting
+
+Blink Cloud error bodies carry `code`, `hint`, `docs`, `retryable` and `request_id` beside the `error` text. Do what `hint` says first; fetch `docs` (markdown) for the full fix. Every code: https://blink.new/docs/errors.md
+<!-- END GENERATED: troubleshooting -->

@@ -1,0 +1,68 @@
+name: Skills
+
+# The generated blocks in skills/*/SKILL.md (Troubleshooting, the `blink` skill's index) come from
+# auto-engineer's error registries and are served at blink.new/.well-known/agent-skills. `check`
+# fails when this repo's copy differs; the daily `sync` opens a PR that brings them back in line.
+on:
+  pull_request:
+    paths: ['skills/**', 'scripts/**', '.github/workflows/skills.yml']
+  push:
+    branches: [main]
+    paths: ['skills/**', 'scripts/**', '.github/workflows/skills.yml']
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Lint skills (Agent Skills spec)
+        run: node scripts/lint-skills.mjs
+      - name: Generated blocks match blink.new
+        run: node scripts/sync-skill-blocks.mjs --check
+
+  sync:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: sync-skill-blocks
+      cancel-in-progress: true
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node scripts/sync-skill-blocks.mjs
+      - name: Open or update a PR with the new blocks (if changed)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: chore/sync-skill-blocks
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add skills/
+          if git diff --cached --quiet; then
+            echo "Generated blocks already match blink.new."
+            exit 0
+          fi
+          git checkout -b "$BRANCH"
+          git commit -m "chore(skills): sync generated blocks from blink.new"
+          git push --force origin "HEAD:refs/heads/$BRANCH"
+          if [ -n "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number')" ]; then
+            echo "Updated the open PR on $BRANCH."
+          else
+            gh pr create --base main --head "$BRANCH" --title "chore(skills): sync generated blocks from blink.new" \
+              --body "Automated: node scripts/sync-skill-blocks.mjs copied the generated Troubleshooting / skill-index blocks from https://blink.new/.well-known/agent-skills." \
+              || { echo "::error::$BRANCH is pushed but no PR was opened. Turn on Settings > Actions > 'Allow GitHub Actions to create and approve pull requests', or open it by hand."; exit 1; }
+          fi

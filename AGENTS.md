@@ -15,7 +15,8 @@ mcp/                          MCP server npm package (@blinkdotnew/mcp)
   src/index.ts                STDIO entry — registers all tools
   src/lib/api.ts              HTTP client (blink.new + core.blink.new)
   src/tools/                  Tool definitions by category (21 files)
-skills/                       15 SKILL.md files for agent domain knowledge
+skills/                       16 SKILL.md files for agent domain knowledge (`blink` routes to the rest)
+scripts/                      lint-skills.mjs, sync-skill-blocks.mjs (see Skills)
 agents/                       4 agent personas (Claude Code subagents, also works in Cursor)
 rules/                        Persistent coding rules (.mdc for Cursor)
 .claude/rules/                Same rules as .md for Claude Code
@@ -63,10 +64,11 @@ Auth: OIDC Trusted Publisher. Configured on npmjs.com for `blink-new/blink-plugi
 | Functions     | `blink_functions_list`, `_get`, `_delete`, `_logs`                                                                                        |
 | Versions      | `blink_versions_list`, `_save`, `_restore`                                                                                                |
 
-## Skills (15)
+## Skills (16)
 
 | Skill              | Covers                                                       |
 | ------------------ | ------------------------------------------------------------ |
+| `blink`            | Signpost: connect (CLI/SDK/MCP), keys, error recovery, which skill to load |
 | `blink-full-stack` | End-to-end: create → auth → DB → backend → deploy → domain  |
 | `blink-database`   | SQL CRUD, schema, migrations, SDK methods                    |
 | `blink-auth`       | Managed + headless modes, providers, BYOC                    |
@@ -82,6 +84,12 @@ Auth: OIDC Trusted Publisher. Configured on npmjs.com for `blink-new/blink-plugi
 | `blink-connectors` | OAuth integrations (40+ providers), exec calls               |
 | `blink-agents`     | Claw agent management, secrets, use cases                    |
 | `blink-github`     | GitHub clone, push, PR, issues via Blink GitHub App          |
+
+### Generated blocks — never edit by hand
+
+Text between `<!-- BEGIN GENERATED: … -->` and `<!-- END GENERATED: … -->` (each skill's Troubleshooting, the `blink` skill's index) is rendered by auto-engineer from its error registries and served at `https://blink.new/.well-known/agent-skills/<name>/SKILL.md`. `node scripts/sync-skill-blocks.mjs` copies those blocks here; the `Skills` workflow fails a PR when they differ (`--check`) and opens a sync PR daily. Edit everything outside the markers here — auto-engineer copies this repo's skills to blink.new (`sync-agent-skills.yml`) and re-renders the blocks.
+
+`node scripts/lint-skills.mjs` checks each SKILL.md against the Agent Skills spec (name = folder, description ≤1024 chars, <500 lines).
 
 ## Agents (4)
 

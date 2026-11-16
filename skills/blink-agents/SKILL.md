@@ -96,3 +96,9 @@ Each Claw agent runs on a dedicated Fly.io machine with:
 - Secrets are stored in the Fly machine's `env` config — not Fly app secrets
 - Agents are billed per-hour of machine uptime
 - Each agent gets its own Fly app: `blink-claw-{last8ofAgentId}`
+
+<!-- BEGIN GENERATED: troubleshooting (bun scripts/agent-docs/sync-skill-docs.ts; do not edit by hand) -->
+## Troubleshooting
+
+Blink Cloud error bodies carry `code`, `hint`, `docs`, `retryable` and `request_id` beside the `error` text. Do what `hint` says first; fetch `docs` (markdown) for the full fix. Every code: https://blink.new/docs/errors.md
+<!-- END GENERATED: troubleshooting -->
