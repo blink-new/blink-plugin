@@ -24,7 +24,7 @@ function field(yaml, key) {
   const at = lines.findIndex(l => l.startsWith(`${key}:`))
   if (at === -1) return ''
   const value = lines[at].slice(key.length + 1).trim()
-  if (!/^[>|][-+]?$/.test(value)) return value
+  if (!/^[>|][-+]?$/.test(value)) return value.replace(/^(["'])(.*)\1$/, '$2')
   const body = []
   for (const line of lines.slice(at + 1)) {
     if (!/^\s/.test(line) && line !== '') break
@@ -42,7 +42,8 @@ function problemsOf(dir) {
   const markdown = readFileSync(join(SKILLS_DIR, dir, 'SKILL.md'), 'utf-8')
   const fm = frontmatter(markdown)
   if (!fm) return ['no YAML frontmatter']
-  const lines = markdown.replace(/\r?\n$/, '').split(/\r?\n/).length
+  // Counted as auto-engineer's skill-docs.test.ts does, so a file that passes here passes there.
+  const lines = markdown.split('\n').length
   return [
     fm.name !== dir && `name "${fm.name}" is not the folder name`,
     !(fm.name.length <= 64 && NAME.test(fm.name)) && 'name must be ≤64 chars of a-z, 0-9 and single inner hyphens',

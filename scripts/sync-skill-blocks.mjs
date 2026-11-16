@@ -17,7 +17,7 @@ const BLOCK = /<!-- BEGIN GENERATED: ([\w-]+) [^\r\n]*-->\r?\n[\s\S]*?<!-- END G
 
 function parseArgs(argv) {
   const known = new Set(['--check', '--from'])
-  const unknown = argv.filter((a, i) => a.startsWith('--') && !known.has(a) && argv[i - 1] !== '--from')
+  const unknown = argv.filter((a, i) => !known.has(a) && argv[i - 1] !== '--from')
   if (unknown.length) fail(`Unknown option(s): ${unknown.join(' ')}`)
   if (!argv.includes('--from')) return { check: argv.includes('--check'), fromDir: null }
   const fromDir = argv[argv.indexOf('--from') + 1]
@@ -31,11 +31,24 @@ function fail(message) {
   process.exit(2)
 }
 
+/** null for a 404; throws unless the body really is this skill (a 200 challenge page is not). */
+async function fetchOnce(name) {
+  const res = await fetch(`${LIVE}/${name}/SKILL.md`, { signal: AbortSignal.timeout(15_000) })
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  const body = await res.text()
+  if (!new RegExp(`^---\\r?\\nname: ${name}\\r?\\n`).test(body)) throw new Error('response is not a SKILL.md')
+  return body
+}
+
 async function fetchLive(name, attempt = 1) {
-  const res = await fetch(`${LIVE}/${name}/SKILL.md`, { signal: AbortSignal.timeout(15_000) }).catch(e => e)
-  if (res instanceof Response && (res.ok || res.status === 404)) return res.status === 404 ? null : res.text()
-  if (attempt < 3) return fetchLive(name, attempt + 1)
-  throw new Error(`${LIVE}/${name}/SKILL.md: ${res instanceof Response ? `HTTP ${res.status}` : res.message}`)
+  try {
+    return await fetchOnce(name)
+  } catch (error) {
+    if (attempt >= 3) throw new Error(`${LIVE}/${name}/SKILL.md: ${error.message}`)
+    await new Promise(resolve => setTimeout(resolve, 1000 * attempt))
+    return fetchLive(name, attempt + 1)
+  }
 }
 
 function sourceOf(name, fromDir) {
@@ -56,8 +69,9 @@ function writeBlock(markdown, name, block) {
 /** A block blink.new no longer renders goes too, with the blank lines before it. */
 function removeBlock(markdown, name) {
   const existing = blocksOf(markdown).get(name)
-  const before = markdown.slice(0, existing.index).replace(/\n+$/, '\n')
-  return before + markdown.slice(existing.index + existing[0].length).replace(/^\n/, '')
+  const head = markdown.slice(0, existing.index)
+  const before = head.replace(/(\r?\n)+$/, head.includes('\r\n') ? '\r\n' : '\n')
+  return before + markdown.slice(existing.index + existing[0].length).replace(/^\r?\n/, '')
 }
 
 function withSourceBlocks(markdown, source) {
