@@ -23,27 +23,36 @@ blink auth-config set --provider email --enabled true
 `blink auth-config set` changes providers and mode only. Email settings live in the same config: read it, edit it, write the whole object back.
 
 ```bash
-APP=${BLINK_APP_URL:-https://blink.new}; P=<project_id>; H="Authorization: Bearer $BLINK_API_KEY"
+APP=${BLINK_APP_URL:-https://blink.new}; P=<project_id>; H="Authorization: Bearer $BLINK_API_KEY"  # workspace key, blnk_ak_...
 curl -s "$APP/api/projects/$P/auth" -H "$H"
 # → {"auth":{"providers":{"email":true,"google":true,...},"email":{"require_verification":true,"allow_signup":true}}}
-# PUT the "auth" object back with your edits (e.g. "require_verification": false):
+# PUT back the inner object (the value of "auth", not {"auth":...}) with your edits, e.g. "require_verification": false.
+# A wrapped {"auth":...} body still returns success but loses the mode and email settings.
 curl -s -X PUT "$APP/api/projects/$P/auth" -H "$H" -H 'Content-Type: application/json' -d '<the edited auth object>'
 ```
 
+Set `email.require_verification`, `email.allow_signup` and each provider you care about explicitly, even when the GET already shows the value you want: a project that never saved auth settings gets a template from GET (`require_verification: true`, `github: true`), not what it enforces (verification off, GitHub off), and the PUT makes whatever you send real.
+
 ## Which modules need a signed-in user (security policy)
 
-Each module (`db`, `ai`, `storage`, `realtime`, `rag`) has `require_auth`; modules not listed follow `defaults.require_auth`. Read it with `blink security get --json`.
+Each module (`db`, `ai`, `storage`, `realtime`, `rag`, `agent`, `queue`, …) has `require_auth`; a module with no rule of its own follows `defaults.require_auth`. Read it with `blink security get --json`.
 
-CLI 0.10.0+ changes one module in one command and keeps the rest of the policy: `blink security set --module ai --require-auth true` (check `blink --version`; upgrade with `npm install -g @blinkdotnew/cli@latest`). It refuses to make ai, agent, rag, queue, sandbox or data public, since every anonymous call bills the user's credits: ask the user to do that in the Blink app.
+Change one module with one call; every other module and table rule keeps its stored value:
 
-Without the CLI (or on CLI 0.9.x), read the policy, edit that module, and PUT the **whole** policy back, `version` and the other modules included. With CLI 0.9.x, `blink security set` sends only the one module and fails with `version must be 1` (`POLICY_INVALID`), so don't retry it.
+```bash
+blink security set --module ai --require-auth true   # CLI 0.10.0+ (check `blink --version`; upgrade: npm install -g @blinkdotnew/cli@latest)
+```
+
+On CLI 0.9.x `blink security set` fails with `version must be 1` (`POLICY_INVALID`); don't retry it. Send the same change directly instead:
 
 ```bash
 APP=${BLINK_APP_URL:-https://blink.new}; P=<project_id>; H="Authorization: Bearer $BLINK_API_KEY"
-curl -s "$APP/api/project/$P/security" -H "$H" \
-  | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const {policy}=JSON.parse(s);policy.modules.ai={...policy.modules.ai,require_auth:true};console.log(JSON.stringify({policy}))})' \
-  | curl -s -X PUT "$APP/api/project/$P/security" -H "$H" -H 'Content-Type: application/json' --data-binary @-
+curl -s -X PATCH "$APP/api/project/$P/security" -H "$H" -H 'Content-Type: application/json' -d '{"module":"ai","require_auth":true}'
 ```
+
+Don't GET the policy and PUT it back: the GET can show defaults that differ from what is enforced, so the round trip can open the database to signed-out visitors.
+
+Making ai, agent, rag, queue, sandbox or data public bills every anonymous call to the user's credits, so both calls above refuse it (`NEEDS_APPROVAL`, HTTP 403). Ask the user to approve it in the Blink app (project Settings → Security); don't look for another way.
 
 ## Two Auth Modes
 
