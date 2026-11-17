@@ -66,7 +66,7 @@ Skills teach your agent how to use each Blink feature end-to-end:
 - **blink** — Start here: how to connect, which key goes where, how to recover from a Blink error, and which skill to load
 - **blink-full-stack** — End-to-end guide: scaffold → auth → DB → backend → deploy → domain
 - **blink-database** — SQL database operations, schema design, migrations
-- **blink-auth** — Authentication providers, managed and headless modes
+- **blink-auth** — Authentication providers, managed and headless modes, email sign-up settings, which modules need a signed-in user
 - **blink-backend** — Hono server patterns, environment variables, deployment
 - **blink-storage** — File uploads, CDN URLs, public/private files
 - **blink-queue** — Background tasks, cron schedules, dead letter queue
