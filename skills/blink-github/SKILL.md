@@ -85,3 +85,9 @@ This means:
 `git clone`, `git push`, `gh pr create` work with zero setup — the Claw
 image ships a system-level git credential helper that mints tokens
 automatically. No `gh auth login`, no PAT.
+
+<!-- BEGIN GENERATED: troubleshooting (bun scripts/agent-docs/sync-skill-docs.ts; do not edit by hand) -->
+## Troubleshooting
+
+Blink Cloud error bodies carry `code`, `hint`, `docs`, `retryable` and `request_id` beside the `error` text. Do what `hint` says first; fetch `docs` (markdown) for the full fix. Every code: https://blink.new/docs/errors.md
+<!-- END GENERATED: troubleshooting -->

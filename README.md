@@ -59,10 +59,11 @@ The agent will use the MCP tools to create the project, configure auth, set up t
 
 ## What's Included
 
-### Skills (14)
+### Skills (16)
 
 Skills teach your agent how to use each Blink feature end-to-end:
 
+- **blink** — Start here: how to connect, which key goes where, how to recover from a Blink error, and which skill to load
 - **blink-full-stack** — End-to-end guide: scaffold → auth → DB → backend → deploy → domain
 - **blink-database** — SQL database operations, schema design, migrations
 - **blink-auth** — Authentication providers, managed and headless modes
@@ -77,6 +78,7 @@ Skills teach your agent how to use each Blink feature end-to-end:
 - **blink-notifications** — Email and SMS delivery
 - **blink-connectors** — OAuth integrations (38 providers)
 - **blink-agents** — Cloud agent management and secrets
+- **blink-github** — Clone, push, open PRs and issues through the Blink GitHub App
 
 ### Agents (4)
 

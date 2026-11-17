@@ -111,3 +111,9 @@ const stream = await blink.rag.aiSearch({
 | 409 "Collection exists" | Catch and reuse existing collection |
 | Zero tokens in search | Document still processing — wait for `ready` status |
 | "Identical content" on upload | Duplicate doc — catch error, use existing doc ID |
+
+<!-- BEGIN GENERATED: troubleshooting (bun scripts/agent-docs/sync-skill-docs.ts; do not edit by hand) -->
+## Troubleshooting
+
+Blink Cloud error bodies carry `code`, `hint`, `docs`, `retryable` and `request_id` beside the `error` text. Do what `hint` says first; fetch `docs` (markdown) for the full fix. Every code: https://blink.new/docs/errors.md
+<!-- END GENERATED: troubleshooting -->

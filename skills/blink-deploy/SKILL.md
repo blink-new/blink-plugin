@@ -147,3 +147,11 @@ blink domains add myapp.com
 | 404 after deploy | Verify correct output dir (`dist/`, `out/`, `build/`) |
 | Env vars missing | Set secrets in project settings before build |
 | Stale deploy | Ensure `--prod` flag for production updates. If it's specifically the default `blinkusercontent.com` URL that's stale after a `--prod` deploy, that's expected — `--prod` doesn't touch it (see Preview vs Production); run a plain `blink deploy` (no flag) to update it too |
+
+<!-- BEGIN GENERATED: troubleshooting (bun scripts/agent-docs/sync-skill-docs.ts; do not edit by hand) -->
+## Troubleshooting
+
+Blink Cloud error bodies carry `code`, `hint`, `docs`, `retryable` and `request_id` beside the `error` text. Do what `hint` says first; fetch `docs` (markdown) for the full fix. Every code: https://blink.new/docs/errors.md
+
+- **`cors_origin_not_allowed`** (HTTP 403, don't retry as is): Pass the project's publishable key (blnk_pk_...) as publishableKey in createClient: then any origin is accepted. Or allow the origin: `blink cors get <project>`, then `blink cors set <project> --origins <current...> <origin>` (set replaces the list). [Details](https://core.blink.new/errors/CORS_ORIGIN_NOT_ALLOWED.md)
+<!-- END GENERATED: troubleshooting -->

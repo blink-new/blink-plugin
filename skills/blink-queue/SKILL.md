@@ -141,3 +141,9 @@ const stats = await blink.queue.stats()
 ## Billing
 
 1 credit = 1,000 tasks (0.001 credits/task). Retries and reads are free. Pro+ only.
+
+<!-- BEGIN GENERATED: troubleshooting (bun scripts/agent-docs/sync-skill-docs.ts; do not edit by hand) -->
+## Troubleshooting
+
+Blink Cloud error bodies carry `code`, `hint`, `docs`, `retryable` and `request_id` beside the `error` text. Do what `hint` says first; fetch `docs` (markdown) for the full fix. Every code: https://blink.new/docs/errors.md
+<!-- END GENERATED: troubleshooting -->

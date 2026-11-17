@@ -167,3 +167,16 @@ const blink = createClient({
 })
 ```
 
+<!-- BEGIN GENERATED: troubleshooting (bun scripts/agent-docs/sync-skill-docs.ts; do not edit by hand) -->
+## Troubleshooting
+
+Blink Cloud error bodies carry `code`, `hint`, `docs`, `retryable` and `request_id` beside the `error` text. Do what `hint` says first; fetch `docs` (markdown) for the full fix. Every code: https://blink.new/docs/errors.md
+
+- **`AUTH_REQUIRED`** (HTTP 401, don't retry as is): From a server, send the project's secret key (blnk_sk_...) as `Authorization: Bearer <key>`. In a browser app, pass the publishable key (blnk_pk_...) to createClient, or sign the user in. [Details](https://core.blink.new/errors/AUTH_REQUIRED.md)
+- **`AUTH_SERVER_KEY_REQUIRED`** (HTTP 401, don't retry as is): A workspace API key (blnk_ak_...) works only with the Blink CLI and blink.new/api/v1: for SQL run `blink db query "<sql>"`. To call core.blink.new directly, use the project secret key (blnk_sk_...). [Details](https://core.blink.new/errors/AUTH_SERVER_KEY_REQUIRED.md)
+- **`AUTH_SECRET_KEY_INVALID`** (HTTP 401, don't retry as is): The secret key was rotated, revoked or mistyped. Get the current one from the project's API keys in blink.new (Project settings > API keys), or ask the user for it. Retrying with the same key will not help. [Details](https://core.blink.new/errors/AUTH_SECRET_KEY_INVALID.md)
+- **`AUTH_TOKEN_EXPIRED`** (HTTP 401, don't retry as is): Refresh the user's session: the Blink SDK does this automatically when it holds the refresh token; otherwise sign the user in again. Retrying with the same token will not help. [Details](https://core.blink.new/errors/AUTH_TOKEN_EXPIRED.md)
+- **`AUTH_TOKEN_INVALID`** (HTTP 401, don't retry as is): This is not a valid Blink token for this project. From a server, send the project secret key (blnk_sk_...); a workspace API key (blnk_ak_...) works only with the Blink CLI and blink.new/api/v1. [Details](https://core.blink.new/errors/AUTH_TOKEN_INVALID.md)
+- **`AUTH_PROJECT_MISMATCH`** (HTTP 403, don't retry as is): This credential belongs to a different project. Use the project id this app is linked to (BLINK_PROJECT_ID, or `blink status`), or that project's own key. [Details](https://core.blink.new/errors/AUTH_PROJECT_MISMATCH.md)
+- **`AUTH_UNAVAILABLE`** (HTTP 503, retry may help): Blink could not check this key because of a temporary problem on its side; the key itself may be fine. Retry in a few seconds with the same key. Do not rotate or replace it. If it keeps failing, report the request_id. [Details](https://core.blink.new/errors/AUTH_UNAVAILABLE.md)
+<!-- END GENERATED: troubleshooting -->

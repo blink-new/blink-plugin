@@ -122,4 +122,8 @@ Uploaded files return direct HTTPS URLs: `https://storage.googleapis.com/{projec
 | Invalid path   | Special characters  | Sanitize: `path.replace(/[^a-zA-Z0-9_\-\/\.]/g, '_')` |
 | File too large | Exceeds limit       | Compress or split file                                |
 
+<!-- BEGIN GENERATED: troubleshooting (bun scripts/agent-docs/sync-skill-docs.ts; do not edit by hand) -->
+## Troubleshooting
 
+Blink Cloud error bodies carry `code`, `hint`, `docs`, `retryable` and `request_id` beside the `error` text. Do what `hint` says first; fetch `docs` (markdown) for the full fix. Every code: https://blink.new/docs/errors.md
+<!-- END GENERATED: troubleshooting -->

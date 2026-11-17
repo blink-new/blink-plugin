@@ -186,3 +186,9 @@ blink connector exec composio_googleads /v23/customers/CUSTOMER_ID/campaigns:mut
 | `*_API_ERROR` | Upstream API error (e.g. `SLACK_API_ERROR`) |
 
 Token refresh is handled automatically by Blink backend.
+
+<!-- BEGIN GENERATED: troubleshooting (bun scripts/agent-docs/sync-skill-docs.ts; do not edit by hand) -->
+## Troubleshooting
+
+Blink Cloud error bodies carry `code`, `hint`, `docs`, `retryable` and `request_id` beside the `error` text. Do what `hint` says first; fetch `docs` (markdown) for the full fix. Every code: https://blink.new/docs/errors.md
+<!-- END GENERATED: troubleshooting -->
