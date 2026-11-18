@@ -52,8 +52,9 @@ export const aiTools = {
       url: z.string().describe('URL of audio file'),
       language: z.string().optional(),
     }),
+    // The route reads `audio_url`; a body with `url` is refused with 400.
     execute: async (input: { url: string; language?: string }) =>
-      resourcesRequest('/api/v1/ai/transcribe', { body: input }),
+      resourcesRequest('/api/v1/ai/transcribe', { body: { audio_url: input.url, language: input.language } }),
   },
   blink_ai_call: {
     description: 'Make an AI phone call to any number',

@@ -97,7 +97,8 @@ await blink.ai.streamText(
 |-------|-------|
 | `fal-ai/whisper` (default) | Best accuracy |
 | `fal-ai/wizper` | Faster, Whisper v3 optimized |
-| `fal-ai/speech-to-text/turbo` | Fast, lower cost |
+
+Only these two models are supported. Any other `model` is refused with 400 `UNSUPPORTED_TRANSCRIPTION_MODEL`; for speed, use `fal-ai/wizper`.
 
 ## Critical Rules
 
