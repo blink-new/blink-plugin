@@ -31,8 +31,8 @@ export const aiTools = {
     inputSchema: z.object({
       prompt: z.string(),
       model: z.string().optional(),
-      duration: z.string().optional().describe('e.g. 5s, 10s'),
-      aspect: z.string().optional().describe('e.g. 16:9, 9:16, 1:1'),
+      duration: z.string().optional().describe('Veo models: 4s, 6s or 8s (default 8s). Kling models: 5s or 10s'),
+      aspect: z.string().optional().describe('16:9 or 9:16 (Kling text-to-video also takes 1:1)'),
     }),
     // The route reads `aspect_ratio`; an `aspect` field is ignored.
     execute: async (input: { prompt: string; model?: string; duration?: string; aspect?: string }) =>
@@ -87,8 +87,8 @@ export const aiTools = {
     inputSchema: z.object({
       prompt: z.string(),
       imageUrl: z.string().describe('URL of the source image to animate'),
-      model: z.string().optional().describe('An image-to-video model: fal-ai/veo3.1/fast/image-to-video (default) or fal-ai/sora-2/image-to-video/pro'),
-      duration: z.string().optional().describe('e.g. 5s, 10s'),
+      model: z.string().optional().describe('An image-to-video model: fal-ai/veo3.1/fast/image-to-video (default) or fal-ai/veo3.1/image-to-video (higher quality)'),
+      duration: z.string().optional().describe('4s, 6s or 8s (default 8s)'),
     }),
     // The route reads `image_url` and, without a model, runs text-to-video, so the image-to-video default is set here.
     execute: async (input: { prompt: string; imageUrl: string; model?: string; duration?: string }) =>

@@ -84,7 +84,6 @@ await blink.ai.streamText(
 |-------|------|----------|
 | `fal-ai/veo3.1/fast` (default) | T2V | Fast, good quality |
 | `fal-ai/veo3.1` | T2V | Best quality |
-| `fal-ai/sora-2/text-to-video/pro` | T2V | Cinematic |
 | `fal-ai/veo3.1/image-to-video` | I2V | Animate images |
 
 ## Speech Voices
