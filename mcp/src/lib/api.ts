@@ -42,7 +42,8 @@ async function request(baseUrl: string, path: string, opts: RequestOpts = {}, au
       const errStr = typeof err === 'string' ? err : (err ? JSON.stringify(err) : msg)
       // Append parsed.message if it contains more detail than the error code alone
       const detail = (parsed.message && parsed.message !== parsed.error) ? ` — ${parsed.message}` : ''
-      msg = errStr + detail + envelopeLine(parsed)
+      // An envelope's `error` already folds in the hint and docs; the JSON line carries them once.
+      msg = parsed.code ? (parsed.message ?? errStr) + envelopeLine(parsed) : errStr + detail
     } catch {}
     throw new Error(msg)
   }
