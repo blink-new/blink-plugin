@@ -31,11 +31,14 @@ export const aiTools = {
     inputSchema: z.object({
       prompt: z.string(),
       model: z.string().optional(),
-      duration: z.string().optional().describe('e.g. 5s, 10s'),
-      aspect: z.string().optional().describe('e.g. 16:9, 9:16, 1:1'),
+      duration: z.string().optional().describe('Veo models: 4s, 6s or 8s (default 8s). Kling models: 5s or 10s'),
+      aspect: z.string().optional().describe('16:9 or 9:16 (Kling text-to-video also takes 1:1)'),
     }),
+    // The route reads `aspect_ratio`; an `aspect` field is ignored.
     execute: async (input: { prompt: string; model?: string; duration?: string; aspect?: string }) =>
-      resourcesRequest('/api/v1/ai/video', { body: input }),
+      resourcesRequest('/api/v1/ai/video', {
+        body: { prompt: input.prompt, model: input.model, duration: input.duration, aspect_ratio: input.aspect },
+      }),
   },
   blink_ai_speech: {
     description: 'Convert text to speech audio',
@@ -52,8 +55,9 @@ export const aiTools = {
       url: z.string().describe('URL of audio file'),
       language: z.string().optional(),
     }),
+    // The route reads `audio_url`; a body with `url` is refused with 400.
     execute: async (input: { url: string; language?: string }) =>
-      resourcesRequest('/api/v1/ai/transcribe', { body: input }),
+      resourcesRequest('/api/v1/ai/transcribe', { body: { audio_url: input.url, language: input.language } }),
   },
   blink_ai_call: {
     description: 'Make an AI phone call to any number',
@@ -72,8 +76,9 @@ export const aiTools = {
       imageUrl: z.string().describe('URL of the source image to edit'),
       model: z.string().optional(),
     }),
+    // The route edits the images in `images[]`; an `image` field is ignored and a new image is generated.
     execute: async (input: { prompt: string; imageUrl: string; model?: string }) => {
-      const raw = await resourcesRequest('/api/v1/ai/image', { body: { prompt: input.prompt, image: input.imageUrl, model: input.model } }) as any
+      const raw = await resourcesRequest('/api/v1/ai/image', { body: { prompt: input.prompt, images: [input.imageUrl], model: input.model, n: 1 } }) as any
       return raw?.result ?? raw
     },
   },
@@ -82,11 +87,14 @@ export const aiTools = {
     inputSchema: z.object({
       prompt: z.string(),
       imageUrl: z.string().describe('URL of the source image to animate'),
-      model: z.string().optional(),
-      duration: z.string().optional().describe('e.g. 5s, 10s'),
+      model: z.string().optional().describe('An image-to-video model: fal-ai/veo3.1/fast/image-to-video (default) or fal-ai/veo3.1/image-to-video (higher quality)'),
+      duration: z.string().optional().describe('4s, 6s or 8s (default 8s)'),
     }),
+    // The route reads `image_url` and, without a model, runs text-to-video, so the image-to-video default is set here.
     execute: async (input: { prompt: string; imageUrl: string; model?: string; duration?: string }) =>
-      resourcesRequest('/api/v1/ai/video', { body: { prompt: input.prompt, image: input.imageUrl, model: input.model, duration: input.duration } }),
+      resourcesRequest('/api/v1/ai/video', {
+        body: { prompt: input.prompt, image_url: input.imageUrl, model: input.model ?? 'fal-ai/veo3.1/fast/image-to-video', duration: input.duration },
+      }),
   },
   blink_ai_call_status: {
     description: 'Check the status of an AI phone call',
