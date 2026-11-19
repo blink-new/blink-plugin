@@ -12,6 +12,14 @@ interface RequestOpts {
   body?: unknown
 }
 
+// Blink's agent-error fields; an agent needs `code` and `retryable` to decide its next step.
+const ENVELOPE_KEYS = ['code', 'hint', 'docs', 'retryable', 'request_id', 'fix'] as const
+
+function envelopeLine(parsed: Record<string, unknown>): string {
+  const fields = Object.fromEntries(ENVELOPE_KEYS.filter((k) => parsed[k] !== undefined).map((k) => [k, parsed[k]]))
+  return 'code' in fields ? `\n${JSON.stringify(fields)}` : ''
+}
+
 async function request(baseUrl: string, path: string, opts: RequestOpts = {}, authToken?: string): Promise<unknown> {
   const token = authToken ?? getToken()
   const headers: Record<string, string> = { Authorization: `Bearer ${token}` }
@@ -34,7 +42,8 @@ async function request(baseUrl: string, path: string, opts: RequestOpts = {}, au
       const errStr = typeof err === 'string' ? err : (err ? JSON.stringify(err) : msg)
       // Append parsed.message if it contains more detail than the error code alone
       const detail = (parsed.message && parsed.message !== parsed.error) ? ` — ${parsed.message}` : ''
-      msg = errStr + detail
+      // An envelope's `error` already folds in the hint and docs; the JSON line carries them once.
+      msg = parsed.code ? (parsed.message ?? errStr) + envelopeLine(parsed) : errStr + detail
     } catch {}
     throw new Error(msg)
   }
